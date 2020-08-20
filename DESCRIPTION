@@ -1,0 +1,11 @@
+Package: MATH4753PREU0001
+Type: Package
+Title: For MATH 4753
+Version: 0.1.0
+Author: Nathan Preuss
+Maintainer: Nathan Preuss ???<Nathan.B.Preuss-1@ou.edu>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
