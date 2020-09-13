@@ -1,0 +1,268 @@
+---
+title: "lab4"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks 
+
+## Task 1
+
+Find the working directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+Read in the Spruce data
+```{r}
+spruce <- read.csv("SPRUCE.csv")
+head(spruce)
+```
+
+## Task 3
+
+Trendscatter plot: 
+
+```{r}
+library(s20x)
+trendscatter(Height~BHDiameter,f=0.5, data=spruce, main="f=0.5")
+```
+
+Spruce lm, residuals, fitted object creation
+
+```{r}
+spruce.lm <- lm(Height~BHDiameter, data=spruce)
+height.res <- residuals(spruce.lm)
+height.fit <- fitted(spruce.lm)
+```
+
+Plot of residuals vs fitted.
+```{r}
+library(ggplot2)
+z<-ggplot(spruce, aes(x=height.fit, y=height.res)) + geom_point() + ggtitle("Residuals vs Fitted")
+z
+```
+
+Plot of residuals vs fitted but this time trendscatter:
+
+```{r}
+library(s20x)
+trendscatter(height.res~height.fit, f=0.5, data=spruce, main="f=0.5")
+```
+
+This graph looks like negative quadratic function i.e. $$y = -x^2 + x + b$$
+
+Residuals plot:
+
+```{r}
+plot(spruce.lm, which =1)
+```
+
+Normcheck with Shapiro-Wilk:
+
+```{r}
+normcheck(spruce.lm, shapiro.wilk = TRUE)
+```
+
+The p-value for the Shapiro-Wilk test is 0.29.  The null hypothesis in this case is that the population is normally distributed.
+
+```{r}
+summary(residuals(spruce.lm))
+summary(spruce.lm)
+```
+
+The model works mostly well with the data because the mean of the residuals is 0 and the residuals have a normal distribution, but the residuals do not have constant variance.
+
+## Task 4
+
+Quadratic Model:
+
+```{r}
+quad.lm <- lm(Height~poly(BHDiameter, 2), data=spruce)
+```
+
+Quadratic Plot:
+
+```{r}
+ggplot(spruce,aes(x=BHDiameter, y=Height)) + geom_point() + stat_smooth(method = "lm", formula = y ~ x + I(x^2), size = 1) + ggtitle("Quadratic Plot")
+```
+
+Quad residuals and fitted.
+
+```{r}
+quad.res <- residuals(quad.lm)
+quad.fit <- fitted(quad.lm)
+```
+
+Residuals plot:
+
+```{r}
+plot(quad.lm, which =1)
+```
+
+Normcheck with Shapiro-Wilk:
+
+```{r}
+normcheck(quad.lm, shapiro.wilk = TRUE)
+```
+
+The P-value is 0.684.  We can conclude that this model fits the data pretty well, as the residuals have a normal distribution, have a mean of zero, and have fairly constant variance. 
+
+## Task 5
+
+Summarize quad.lm
+
+```{r}
+summary(quad.lm)
+```
+
+$$ \widehat \beta_0  = 17.9083$$
+$$ \widehat \beta_1  = 13.5368$$
+$$ \widehat \beta_2  = -5.7180$$
+
+```{r}
+confint((quad.lm))
+```
+| | Lower Bound | Upper Bound|
+| --- | --- | --- |
+| $$ \widehat \beta_0 $$ | 17.4398 | 18.3769 |
+| $$ \widehat \beta_1 $$ | 10.7255 | 16.3480 |
+| $$ \widehat \beta_2 $$ | -8.5293 | -2.9068 |
+
+Equation of the fitted line:
+$$ y = -5.7190 \times x^2 + 13.5368 \times x + 17.903 $$ 
+
+```{r}
+predict(quad.lm, data.frame(BHDiameter=c(15,18,20)))
+```
+
+I predict that a diameter of 15 will give a height of 16.7269, a diameter of 18 will give a height of 18.4174, and a diameter of 20 will give a height of 19.2698.
+
+Compared with the linear model:
+
+```{r}
+predict(spruce.lm, data.frame(BHDiameter=c(15,18,20)))
+```
+
+| | Quad | Linear |
+| --- | --- | --- |
+| 15 | 16.7269 | 16.3689 |
+| 18 | 18.4174 | 17.8134 |
+| 20 | 19.2698 | 18.7763 |
+
+As we can see, the quadratic model gives a slightly higher value than the linear model.
+
+```{r}
+summary(spruce.lm)
+summary(quad.lm)
+```
+
+The value of multiple R-squared is 0.7741 for the quadratic model, which is higher than 0.6569 for the linear model.
+Because the quadratic model has a lower multiple R-squared, it fits the data better than the linear model.
+In this case, the multiple R-squared tells us the strength of the correlation.  
+Because the quadratic model has a high multiple R-Squared, it explains the most variability in the data.
+
+```{r}
+anova(spruce.lm)
+anova(quad.lm)
+```
+
+The quadratic model has lower residual sum of squares and a lower mean sum of squares, meaning that it fits the model better.
+
+
+$$ RSS= 63.007, MSS = 215.941, TSS = 278.9475 $$
+
+$$\frac{MSS} {TSS} = R^2 = .7741$$ 
+
+## Task 6
+
+Cook's plot: (cooks20x is not available for my version of R (4.0.2), so I'm making do with another test)
+
+```{r}
+library(car)
+plot(spruce$BHDiameter, cooks.distance(quad.lm))
+```
+
+Cooks distance is commonly used to check for the validity of a data point.  Data points with high cooks distances are likely to be outliers and unduly distort the model.
+
+Applying the cooks methods to the quadratic model suggests that Height values for lower BHDiameters have a greater potential to be outliers, so they should be investigated in more detail.
+
+Removing datum with highest cooks distance:
+
+```{r}
+spruceRemoved <- spruce[-24, ]
+quad2.lm <- lm(Height~poly(BHDiameter, 2), data=spruceRemoved)
+summary(quad2.lm)
+summary(quad.lm)
+```
+
+Removing that data point increased the multiple r-squared to 0.8159, making the new model slightly more accurate.
+
+## Task 7
+
+piecewise regression:
+
+```{r}
+sp2.df=within(spruce, X<-(BHDiameter-18)*(BHDiameter>18))
+sp2.df
+lmp=lm(Height~BHDiameter + X,data=sp2.df)
+tmp=summary(lmp)
+names(tmp)
+myf = function(x,coef){
+  coef[1]+coef[2]*(x) + coef[3]*(x-18)*(x-18>0)
+}
+plot(spruce,main="Piecewise regression")
+myf(0, coef=tmp$coefficients[,"Estimate"])
+curve(myf(x,coef=tmp$coefficients[,"Estimate"] ),add=TRUE, lwd=2,col="Blue")
+abline(v=18)
+text(18,16,paste("R sq.=",round(tmp$r.squared,4) ))
+```
+
+## Task 8
+
+### Function for lab 1.
+
+```{r}
+library(MATH4753PREU0001)
+ddt <- read.csv("DDT.csv")
+violPlot(ddt, ddt$RIVER, ddt$LENGTH, ddt$SPECIES)
+```
+
+This function creates a simple violin plot based on the given data.  It uses ggplot2 to create the plot, and it offers almost no way for the user to customize the graph.  But if they don't know how to use ggplot and just wanted a violin plot, this function would create a violin plot for them.
+
+### Function for lab 2
+
+```{r}
+spruceVector <- as.vector(spruce[,1])
+library(MATH4753PREU0001)
+chebyshev(2, spruceVector)
+```
+
+This function determines the percentage of data entries that fall within a specified number of standard deviations of the mean.  This function is useful when demonstrating Chebyshev's rule.
+
+### Function for lab 3
+
+```{r}
+tmr(spruce$Height, spruce$BHDiameter, spruce)
+```
+
+This function determines the TSS, MSS, and RSS for a certain data set.  This is helpful because the summary function does not display these raw values and instead returns calculated values like multiple r-squared.
+
+### Function for lab 4
+
+```{r}
+fitCompare(spruce.lm, quad.lm)
+```
+
+This function compares the multiple r-squared of 2 different models and tells the user which model has a better fit.  This is useful when the user has multiple different models floating around and needs to quickly determine which model explains the most variance without having to hunt through the summary function of two models and comparing them.

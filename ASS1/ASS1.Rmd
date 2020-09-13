@@ -1,0 +1,217 @@
+---
+title: "Assignment 1"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Completed 8/15 Questions
+
+# Questions 
+
+## Question 1
+
+|Assignment Type | Percentage | Notes |
+|---|---|---|
+|Assignments | 15 | 4 of equal value|
+|Laboratories | 10 | Up to 16 labs, in class exercises, Graded on canvas|
+|Projects | 10 | Project 2 is worth twice that of Project 1|
+|In Class Quizzes | 10 | |
+|Chapter Online Canvas Quizzes | 5 ||
+|Midterms | 20 ||
+|Final | 30 ||
+
+Grading Scale:
+
+| Grade | Scores |
+|---|---|
+|A | 90s|
+|B | 80s|
+|C | 60s and 70s|
+|D | 50s|
+|F | <50|
+
+Other notes: There is no alternate assessment; the grade will come from the various components listed above.  Assignments should be submitted to the appropriate dropbox on canvas.  
+
+## Question 4
+### 4(a)
+The 4 types of random sampling are simple random samples, stratified random samples, cluster sampling, and systemic sampling.
+
+### 4(b)
+Simple random sampling: A sample of n experimental units from the population where each different possible sample of size n has an equal chance to be the chosen sample.
+
+Stratified random sampling: A sample technique commonly used when the experimental units have strata, that is that characteristics of units within the strata are more similar than the characteristics between strata.  In this case, a simple random sample is taken amongst each strata, and then the random samples of the different strata are combined into one big sample for the entire data set.
+
+Cluster sampling: In this case, experimental data are grouped into various natural clusters.  Then, various clusters are randomly sampled in order to create the sample for the data set.
+
+Systemic sampling: In this case, every *kth* unit is chosen from a list of all experimental units to create the sample.
+
+## Question 5
+### Question 5 Textbook
+
+The 5 wells, as asked for in the textbook.
+```{r}
+getwd()
+mtbe <- read.csv("MTBE.csv", header=TRUE)
+ind=sample(1:223,5,replace=FALSE) # random indices
+mtbe[ind,]
+```
+
+### Question 5a
+#### Question 5a.i
+
+removed omitted values
+```{r}
+mtbeo <- na.omit(mtbe)
+```
+
+#### Question 5a.ii
+
+calculating sd
+```{r}
+depth <- mtbeo[mtbeo$Aquifier == "Bedrock",]$Depth
+sd(depth)
+```
+
+The standard deviation is 56.453.
+
+## Question 8
+
+### Question 8a
+Bar graph
+
+### Question 8b
+The variable measured is types of robotics limbs
+
+### Question 8c
+The robot design currently used the most is legs ONLY.
+
+### Question 8d
+
+```{r}
+temp <- c(15, 8, 63, 20)
+freq <- temp/sum(temp)
+head(freq)
+```
+
+Relative frequencies. None: 14.15%, Both: 7.54%, Legs ONLY: 59.43%, Wheels ONLY: 18.86%
+
+### Question 8e
+
+```{r}
+pareto<-function(x,mn="Pareto barplot",...){  # x is a vector
+x.tab=table(x)
+xx.tab=sort(x.tab, decreasing=TRUE,index.return=FALSE)
+cumsum(as.vector(xx.tab))->cs
+length(x.tab)->lenx
+bp<-barplot(xx.tab,ylim=c(0,max(cs)),las=2)
+lb<-seq(0,cs[lenx],l=11)
+axis(side=4,at=lb,labels=paste(seq(0,100,length=11),"%",sep=""),las=1,line=-1,col="Blue",col.axis="Red")
+for(i in 1:(lenx-1)){
+segments(bp[i],cs[i],bp[i+1],cs[i+1],col=i,lwd=2)
+}
+title(main=mn,...)
+}
+RL=c("None","Both","LegsO","WheelsO")
+l=rep(RL,temp)
+pareto(l)
+```
+
+
+## Question 10
+
+Creating the pie chart.
+```{r}
+swd=read.csv("SWDEFECTS.csv", header=TRUE)
+library(plotrix)
+tab=table(swd$defect)
+rtab=tab/sum(tab)
+round(rtab,2)
+pie3D(rtab,labels=list("OK","Defective"),main="pie plot of SWD")
+```
+
+Software appears to be defective about 10% of the time.
+
+## Question 12
+
+Putting the data into a vector and checking to see if the empirical rule applies.
+
+```{r}
+pipe <- c(1.72, 2.50, 2.16, 2.13, 1.06, 2.24, 2.31, 2.03, 1.09, 1.40, 2.57, 2.64, 1.26, 2.05, 1.19, 2.13, 1.27, 1.51, 2.41, 1.95)
+hist(pipe)
+```
+
+While this distribution is not unimodal, nor is it symmetric.  Therefore, we will need to use Chebyshev's rule.
+Using Chebyshev's rule with k = 4, we expect at least 15/16, or 93.75% of data points (which is about 95%) to fall within 4 standard deviations of the mean.
+Calculating the standard deviation:
+```{r}
+sd(pipe)
+mean(pipe) + 4*sd(pipe)
+mean(pipe) - 4*sd(pipe)
+```
+
+Therefore, we expect about 95% of the data to fall within the range -0.215 to 3.977.
+
+## Question 13
+
+```{r}
+ants=read.csv("test.csv", header=TRUE)
+head(ants)
+```
+
+### Question 13a
+```{r}
+mean(ants$AntSpecies)
+median(ants$AntSpecies)
+```
+The mean is 12.818, or the average number of ants at a site.
+The median is 5, or the middle number of ants at a site.  This is much lower than the mean because there are a couple of potential outliers, where large numbers of different species of ant were found.
+The mode is 4, or the most common number of species of ant found at the sites.
+
+### Question 13b
+
+I would recommend median as the best measure of central tendency.  The median mitigates the effects of the outliers as compared to the mean, and there are a small number of samples for the mode to be representative of the central tendency.
+
+### Question 13c
+
+For the Dry Steppes:
+```{r}
+mean(ants[1:5, 5])
+median(ants[1:5, 5])
+```
+
+The mean is 40.4, the median is 40, and the mode is 40.
+
+### Question 13d
+
+For the Gobi Desert:
+```{r}
+mean(ants[6:11, 5])
+median(ants[6:11, 5])
+```
+
+The mean is 28, the median is 26, and the mode is 30.
+
+### Question 13e
+
+Yes, the center of the plant coverage distribution appears to be different in the two different regions.  In the dry steppes, the plan coverage is higher, at about 40%, with both the mode and median reporting 40% exactly, and the mean report 40.4%.  In the desert, the plant cover is lower, with the various measures of central tendency reporting 26-30% plant cover.  Because the two different locations have a large difference in their measures of central tendency, there is a different total plant coverage distribution at the two regions.
+
+## Question 15
+
+Recreating the ggplot.
+
+```{r}
+ddt <- read.csv("DDT.csv")
+library(ggplot2)
+x<-ggplot(ddt, aes(x=RIVER, y=LENGTH, fill =SPECIES)) + geom_boxplot(outlier.colour = "black") + ggtitle("Nathan Preuss") 
+#It kept giving me errors with trying to change the font to courier, so hopefully the default is courier.
+x
+```
+

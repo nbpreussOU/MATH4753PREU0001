@@ -1,0 +1,102 @@
+---
+title: "Lab 2"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Tasks 
+
+## Task 1
+
+Find the working directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+Read in the DDT data
+```{r}
+gas <- read.csv("EPAGAS.csv")
+head(gas)
+```
+
+## Task 3
+Make mpg a vector
+```{r}
+mpgVector <- as.vector(gas[,1])
+class(mpgVector)
+```
+Calculating z
+```{r}
+z=(mpgVector-mean(mpgVector))/sd(mpgVector)
+mean(z)
+```
+
+$$
+\bar{z} = 0\\
+$$
+
+```{r}
+var(z)
+```
+
+$$
+s^2_z = 1
+$$
+
+Find possible outliers.  
+Possible outliers have a z score between 2 and 3
+```{r}
+mpgVector[abs(z)>=2 & abs(z)<=3]
+```
+
+Find the actual outliers, which have a z score greater than 3
+
+```{r}
+mpgVector[abs(z)>3]
+```
+
+Latticeplot
+Plotting the outliers with a different color.  Outliers are red, possible outliers are blue, and the rest are black
+
+```{r}
+library(lattice)
+mycol = ifelse(abs(z)>3, "Red",
+        ifelse(abs(z)>=2 &abs(z)<=3,"Blue", "Black"))  
+dotplot(mpgVector,col=mycol)
+```
+
+## Task 4
+Making the boxplot
+
+```{r}
+boxplot(mpgVector, notch=TRUE, col="black", main="MPG Boxplot", horizontal = TRUE)
+```
+
+With Chebyshev's rule, we would expect at least 75% of values to occur within two standard deviations of the mean
+
+```{r}
+length(mpgVector[abs(z)<2])/length(mpgVector)
+```
+
+96% of observations fall within 2 standard deviations of the mean, satisfying Chebyshev's rule
+
+The empirical rule states that about 95% of data will fall within 2 standard deviations of the mean.  The mpg data corresponds well to this statement, as 96% of the observations fall within 2 sd instead of 95%.
+
+The empirical rule is valid in this case, because a histograms shows a mound-shaped, symmetric distribution.
+
+```{r}
+hist(mpgVector)
+```
+

@@ -1,0 +1,167 @@
+---
+title: "Lab 1"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Tasks 
+
+## Task 1
+
+Find the working directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+Read in the DDT data
+```{r}
+ddt <- read.csv("DDT.csv")
+head(ddt)
+```
+
+## Task 3
+  a. The qualitative variables are RIVER and SPECIES
+  b. The quantitative variables are MILE, LENGTH, WEIGHT, DDT
+  c. 3 Species
+```{r}
+unique(ddt[3])
+```
+  d.
+```{r}
+with(ddt, ddt[WEIGHT>800 & SPECIES=="LMBASS",])
+```
+  e.
+```{r}
+with(ddt, ddt[RIVER=="SCM" & DDT>4,])
+```
+  
+## Clicker Questions
+  a. 42.81
+```{r}
+summary(ddt)
+```
+  b.365.5461
+```{r}
+sapply(ddt[5], sd)
+```
+  c. 0 (Axis labels are reversed)
+```{r}
+plot(ddt$WEIGHT,ddt$LENGTH)
+```
+ 
+  d. 1.00
+```{r}
+v=1:20
+a=v/20
+tail(a)
+```
+
+## Task 4
+Table of rivers
+```{r}
+rivertable <-table(ddt$RIVER)
+rivertable
+```
+
+Color coded barplot of rivers
+```{r}
+rivertable <-table(ddt$RIVER)
+barplot(rivertable, col=rainbow(4), xlab = "River Name", main = "Color Coded River Barplot")
+```
+
+Table of rivers crossed with species of fish
+```{r}
+spriv=with(ddt,table(SPECIES,RIVER))
+spriv
+```
+
+Barplot of rivers crossed with species of fish
+```{r}
+spriv=with(ddt,table(SPECIES,RIVER))
+barplot(spriv, xlab = "River")
+```
+
+## Task 5
+Pie chart of Fish Species
+```{r}
+spec = table(ddt$SPECIES)
+pie(spec, labels = names(spec))
+```
+
+Pie Chart of Rivers
+```{r}
+rivertable <-table(ddt$RIVER)
+pie(rivertable, names(rivertable))
+```
+
+## Task 6
+Boxplot of DDT
+
+```{r}
+boxplot(ddt$DDT, xlab = "DDT")
+```
+
+Boxplot of WEIGHT
+```{r}
+boxplot(ddt$WEIGHT, xlab = "WEIGHT")
+```
+
+Boxplot of LENGTH
+```{r}
+boxplot(ddt$LENGTH, xlab = "LENGTH")
+```
+
+## Task 7
+Make a coplot of LENGTH Vs WEIGHT given RIVER
+```{r}
+coplot(LENGTH~WEIGHT|RIVER,data=ddt)
+```
+
+Make a coplot of DDT Vs WEIGHT given SPECIES
+```{r}
+coplot(DDT~WEIGHT|SPECIES,data=ddt)
+```
+
+## Task 8
+
+The 3 GGPLOTS
+
+Box Plot
+```{r}
+library(ggplot2)
+
+# Number 1
+x<-ggplot(ddt, aes(x=SPECIES, y=WEIGHT, fill =RIVER)) + geom_boxplot(outlier.colour = "black") + ggtitle("Nathan Preuss")
+x
+```
+
+Violin Plot
+
+```{r}
+# Number 2
+library(ggplot2)
+y<-ggplot(ddt, aes(x=RIVER, y=LENGTH, fill =SPECIES)) + geom_violin() + ggtitle("Nathan Preuss")
+y
+```
+
+Scatter Plot
+
+```{r}
+# Number 3
+ddt <- read.csv("DDT.csv")
+library(ggplot2)
+z<-ggplot(ddt, aes(x=WEIGHT, y=LENGTH, color =SPECIES)) + geom_point() + ggtitle("Nathan Preuss")
+z
+```
