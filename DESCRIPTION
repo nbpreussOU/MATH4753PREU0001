@@ -1,13 +1,14 @@
 Package: MATH4753PREU0001
 Type: Package
 Title: For MATH 4753
-Version: 0.1.0
+Version: 0.3.1
 Author: Nathan Preuss
 Maintainer: Nathan Preuss ???<Nathan.B.Preuss-1@ou.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: Contains a variety of functions used in MATH 4753 labs.
+License: MIT
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/nbpreussOU/MATH4753PREU0001
 BugReports: https://github.com/nbpreussOU/MATH4753PREU0001/issues
+RoxygenNote: 7.1.1
+Imports: ggplot2

@@ -89,7 +89,7 @@ The model works mostly well with the data because the mean of the residuals is 0
 Quadratic Model:
 
 ```{r}
-quad.lm <- lm(Height~poly(BHDiameter, 2), data=spruce)
+quad.lm <- lm(Height~BHDiameter + I(BHDiameter^2), data=spruce)
 ```
 
 Quadratic Plot:
@@ -127,21 +127,21 @@ Summarize quad.lm
 summary(quad.lm)
 ```
 
-$$ \widehat \beta_0  = 17.9083$$
-$$ \widehat \beta_1  = 13.5368$$
-$$ \widehat \beta_2  = -5.7180$$
+$$ \widehat \beta_0  = 0.8609$$
+$$ \widehat \beta_1  = 1.4696$$
+$$ \widehat \beta_2  = -.0274$$
 
 ```{r}
 confint((quad.lm))
 ```
 | | Lower Bound | Upper Bound|
 | --- | --- | --- |
-| $$ \widehat \beta_0 $$ | 17.4398 | 18.3769 |
-| $$ \widehat \beta_1 $$ | 10.7255 | 16.3480 |
-| $$ \widehat \beta_2 $$ | -8.5293 | -2.9068 |
+| $$ \widehat \beta_0 $$ | -3.6252 | 5.3570 |
+| $$ \widehat \beta_1 $$ | 0.9736 | 1.9656 |
+| $$ \widehat \beta_2 $$ | -0.0409 | -0.0139 |
 
 Equation of the fitted line:
-$$ y = -5.7190 \times x^2 + 13.5368 \times x + 17.903 $$ 
+$$ y = -.0274 \times x^2 + 1.4696 \times x + 0.8609 $$ 
 
 ```{r}
 predict(quad.lm, data.frame(BHDiameter=c(15,18,20)))
@@ -174,8 +174,7 @@ In this case, the multiple R-squared tells us the strength of the correlation.
 Because the quadratic model has a high multiple R-Squared, it explains the most variability in the data.
 
 ```{r}
-anova(spruce.lm)
-anova(quad.lm)
+anova(spruce.lm, quad.lm)
 ```
 
 The quadratic model has lower residual sum of squares and a lower mean sum of squares, meaning that it fits the model better.
