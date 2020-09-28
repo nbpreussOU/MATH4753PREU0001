@@ -151,7 +151,7 @@ mybar=function(tab, acc)
   barplot(tab, beside=TRUE, leg=TRUE)
   as.data.frame(tab)
   tab[,-1] <-round(tab[,-1],acc)
-  tab
+  list(x, tab)
 }
 ```
     

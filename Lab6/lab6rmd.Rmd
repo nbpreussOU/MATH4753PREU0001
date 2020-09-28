@@ -1,0 +1,288 @@
+---
+title: "Lab 6"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks 
+
+## Task 1
+
+Find the working directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+### Layout and first 4 plots
+
+```{r}
+# Create a layout of 4 plots
+layout(mat = matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))
+
+# Creates the 4 curves and plots them in the layout
+curve(dnorm(x, mean=10,sd=4),xlim=c(-1,21))
+curve(dnorm(x, mean=10,sd=2),xlim=c(4,16))
+curve(dnorm(x, mean=5,sd=10),xlim=c(-25,35))
+curve(dnorm(x, mean=5,sd=1/2),xlim=c(3,7))
+```
+
+### Layout and second 4 plots
+
+```{r}
+# Create a layout of 4 plots
+layout(mat = matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))
+
+curve(dnorm(x, mean=0,sd=1),xlim=c(-5,5))
+
+# x values corresponding to the x - cords of points on the curve
+xcurve=seq(2,5,length=1000)
+
+# Y values corresponding t0 the x values
+ycurve=dnorm(xcurve,mean=0,sd=1)
+
+# Fill in the polygon with the given vertices
+polygon(c(2,xcurve,5),c(0,ycurve,0),col="Red")
+
+# Put in the text with the appropriate area
+
+# Area
+prob=pnorm(5,mean=0,sd=1)-pnorm(2,mean=0,sd=1)
+prob=round(prob,4)
+
+# Click to paste the text onto the graph
+text(0,0.05, paste("Area = ", prob, sep=""))
+
+## Second Curve
+curve(dnorm(x, mean=4,sd=2),xlim=c(-5,10))
+xcurve=seq(1,5,length=1000)
+ycurve=dnorm(xcurve,mean=4,sd=2)
+# Fill in the polygon with the given vertices
+polygon(c(1,xcurve,5),c(0,ycurve,0),col="Red")
+# Area
+prob=pnorm(5,mean=4,sd=2)-pnorm(1,mean=4,sd=2)
+prob=round(prob,4)
+# Click to paste the text onto the graph
+text(-2,0.1, paste("Area = ", prob, sep=""))
+
+## Third Curve
+curve(dnorm(x, mean=10,sd=4),xlim=c(-5,15))
+xcurve=seq(-5,10,length=1000)
+ycurve=dnorm(xcurve,mean=10,sd=4)
+# Fill in the polygon with the given vertices
+polygon(c(-5,xcurve,10),c(0,ycurve,0),col="Red")
+# Area
+prob=pnorm(10,mean=10,sd=4)-pnorm(-5,mean=4,sd=2)
+prob=round(prob,4)
+# Click to paste the text onto the graph
+text(-2,0.05, paste("Area = ", prob, sep=""))
+
+## 4th Curve
+curve(dnorm(x, mean=-2,sd=1/2),xlim=c(-5,0))
+xcurve=seq(-3,-2,length=1000)
+ycurve=dnorm(xcurve,mean=-2,sd=1/2)
+polygon(c(-3,xcurve,-2),c(0,ycurve,0),col="Red")
+prob=pnorm(-2,mean=-2,sd=1/2)-pnorm(-3,mean=-2,sd=1/2)
+prob=round(prob,4)
+text(-3.8,0.4, paste("Area = ", prob, sep=""))
+```
+
+## Task 3
+
+### Overlay of the 3 plots
+
+```{r}
+curve(dgamma(x,shape=1,scale=1),xlim=c(0,10),ylim=c(0,1),col="Red",lwd=2,
+ylab="Gamma density", main="Beta=1")
+text(1.2,.6,paste("alpha=",1))
+curve(dgamma(x,shape=3,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE,lwd=2)
+text(.43,.23,paste("alpha=",3))
+curve(dgamma(x,shape=5,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE, col="Blue",lwd=2)
+text(1.15,.09,paste("alpha=",5))
+```
+
+### Regions and Probabilities
+
+```{r}
+layout(matrix(1:3,nr=3,nc=1,byrow=TRUE))
+
+#using same curve code as task 2, except this time using dgamma and pgamma
+curve(dgamma(x, shape=3,scale=2),xlim=c(0,10))
+xcurve=seq(2,5,length=1000)
+ycurve=dgamma(xcurve, shape=3,scale=2)
+polygon(c(2,xcurve,5),c(0,ycurve,0),col="Red")
+prob=pgamma(5,shape=3,scale=2)-pgamma(2,shape=3, scale=2)
+prob=round(prob,4)
+text(6,0.03, paste("Area = ", prob, sep=""))
+
+## Region 2
+curve(dgamma(x, shape=6,scale=3),xlim=c(0,10))
+xcurve=seq(1,4,length=1000)
+ycurve=dgamma(xcurve, shape=6,scale=3)
+polygon(c(1,xcurve,4),c(0,ycurve,0),col="Red")
+prob=pgamma(4,shape=6,scale=3)-pgamma(1,shape=6, scale=3)
+prob=round(prob,4)
+text(6,0.03, paste("Area = ", prob, sep=""))
+
+## Region 3
+curve(dgamma(x, shape=2,scale=4),xlim=c(0,10))
+xcurve=seq(3,6,length=1000)
+ycurve=dgamma(xcurve, shape=2,scale=4)
+polygon(c(3,xcurve,6),c(0,ycurve,0),col="Red")
+prob=pgamma(6,shape=4,scale=2)-pgamma(3,shape=4, scale=2)
+prob=round(prob,4)
+text(7,0.03, paste("Area = ", prob, sep=""))
+```
+
+## Task 4
+
+### 4 Plots
+
+```{r}
+layout(mat = matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))
+curve(dchisq(x, 1), xlim=c(-2, 10))
+curve(dchisq(x, 2), xlim=c(-2, 15))
+curve(dchisq(x, 4), xlim=c(-2, 20))
+curve(dchisq(x, 20), xlim=c(0, 40))
+```
+
+### Regions and Probabilities
+
+```{r}
+layout(matrix(1:3,nr=3,nc=1,byrow=TRUE))
+
+# Graph 1
+curve(dchisq(x, 2),xlim=c(0,10))
+xcurve=seq(2,4,length=1000)
+ycurve=dchisq(xcurve, 2)
+polygon(c(2,xcurve,4),c(0,ycurve,0),col="Red")
+prob=pchisq(4, 2)-pchisq(2,2)
+prob=round(prob,4)
+text(6,0.2, paste("Area = ", prob, sep=""))
+
+# Graph 2
+curve(dchisq(x, 3),xlim=c(0,10))
+xcurve=seq(3,5,length=1000)
+ycurve=dchisq(xcurve, 3)
+polygon(c(3,xcurve,5),c(0,ycurve,0),col="Red")
+prob=pchisq(5, 3)-pchisq(3,3)
+prob=round(prob,4)
+text(6,0.2, paste("Area = ", prob, sep=""))
+
+# Graph 3
+curve(dchisq(x, 20),xlim=c(0,30))
+xcurve=seq(10,21,length=1000)
+ycurve=dchisq(xcurve, 20)
+polygon(c(10,xcurve,21),c(0,ycurve,0),col="Red")
+prob=pchisq(21, 20)-pchisq(10,20)
+prob=round(prob,4)
+text(6,0.02, paste("Area = ", prob, sep=""))
+```
+
+## Task 5
+
+### 4 Plots
+
+```{r}
+layout(mat = matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))
+curve(dweibull(x, 1, 10), xlim=c(-2, 20))
+curve(dweibull(x, 2, 5), xlim=c(-2, 15))
+curve(dweibull(x, 4, 5), xlim=c(0, 10))
+curve(dweibull(x, 20, 2), xlim=c(1.3, 2.3))
+```
+
+### 3 Area and Probability
+
+```{r}
+layout(matrix(1:3,nr=3,nc=1,byrow=TRUE))
+
+# Graph 1
+curve(dweibull(x, shape=5,scale=5),xlim=c(0,8))
+xcurve=seq(2,5,length=1000)
+ycurve=dweibull(xcurve, shape=5,scale=5)
+polygon(c(2,xcurve,5),c(0,ycurve,0),col="Red")
+prob=pweibull(5,shape=5,scale=5)-pweibull(2,shape=5, scale=5)
+prob=round(prob,4)
+text(2,0.23, paste("Shape = 5, Scale = 5, Area = ", prob, sep=""))
+
+# Graph 2
+curve(dweibull(x, shape=10,scale=10),xlim=c(5,13))
+xcurve=seq(8,12,length=1000)
+ycurve=dweibull(xcurve, shape=10,scale=10)
+polygon(c(8,xcurve,12),c(0,ycurve,0),col="Red")
+prob=pweibull(12,shape=10,scale=10)-pweibull(8,shape=10, scale=10)
+prob=round(prob,4)
+text(7,0.23, paste("Shape = 10, Scale = 10, Area = ", prob, sep=""))
+
+# Graph 3
+curve(dweibull(x, shape=7, scale=1),xlim=c(0,4))
+xcurve=seq(.5,3,length=1000)
+ycurve=dweibull(xcurve, shape=7,scale=1)
+polygon(c(.5,xcurve,3),c(0,ycurve,0),col="Red")
+prob=pweibull(3,shape=7,scale=1)-pweibull(.5,shape=7, scale=1)
+prob=round(prob,4)
+text(2,0.7, paste("Shape = 7, Scale = 1, Area = ", prob, sep=""))
+```
+
+## Task 6
+
+### 4 Plots
+
+```{r}
+layout(mat = matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2))
+curve(dbeta(x, 1, 10), xlim=c(-.1, .5))
+curve(dbeta(x, 1, 10, 2), xlim=c(-.3, 1))
+curve(dbeta(x, 5, 5), xlim=c(-.1, 1))
+curve(dbeta(x, 5, 5, 4), xlim=c(-.2, 1.1))
+```
+
+### Areas and Probabilities
+
+```{r}
+layout(matrix(1:3,nr=3,nc=1,byrow=TRUE))
+
+# Graph 1
+curve(dbeta(x, shape1=2,shape2=4),xlim=c(0,1))
+xcurve=seq(.2,.3,length=1000)
+ycurve=dbeta(xcurve, shape1=2,shape2=4)
+polygon(c(.2,xcurve,.3),c(0,ycurve,0),col="Red")
+prob=pbeta(.3,shape1=2,shape2=4)-pbeta(.2,shape1=2, shape2=4)
+prob=round(prob,4)
+text(.7,1.8, paste("Shape1 = 2, Shape2 = 4, Area = ", prob, sep=""))
+
+# Graph 2
+curve(dbeta(x, shape1=4,shape2=2),xlim=c(0,1))
+xcurve=seq(.2,.3,length=1000)
+ycurve=dbeta(xcurve, shape1=4,shape2=2)
+polygon(c(.2,xcurve,.3),c(0,ycurve,0),col="Red")
+prob=pbeta(.3,shape1=4,shape2=2)-pbeta(.2,shape1=4, shape2=2)
+prob=round(prob,4)
+text(.3,1.8, paste("Shape1 = 4, Shape2 = 2, Area = ", prob, sep=""))
+
+# Graph 3
+curve(dbeta(x, shape1=3,shape2=1),xlim=c(0,1.1))
+xcurve=seq(.4,.5,length=1000)
+ycurve=dbeta(xcurve, shape1=3,shape2=1)
+polygon(c(.4,xcurve,.5),c(0,ycurve,0),col="Red")
+prob=pbeta(.5,shape1=3,shape2=1)-pbeta(.4,shape1=3, shape2=1)
+prob=round(prob,4)
+text(.3,1.8, paste("Shape1 = 3, Shape2 = 1, Area = ", prob, sep=""))
+```
+
+## Task 7
+
+```{r}
+MATH4753PREU0001::myncurve(10, 5, 6)
+```
+
+

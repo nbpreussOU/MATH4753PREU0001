@@ -3,5 +3,6 @@
 export(bindif)
 export(chebyshev)
 export(fitCompare)
+export(myncurve)
 export(tmr)
 export(violPlot)

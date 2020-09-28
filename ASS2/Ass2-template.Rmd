@@ -1,0 +1,383 @@
+---
+title: 'Assignment 2'
+author: "Nathan Preuss"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions{}
+
+## I have solved 17/17 Questions.
+
+## Q 1
+
+### A
+Table shows the % correct, so the probability of % failure is 1- % correct.
+$$ 1- 0.9212 = 0.0788 $$
+
+### B
+
+Table shows the % correct, so the probability of % failure is 1- % correct.
+$$ 1 - 0.7455 = 0.2545 $$
+
+### C
+The participant is more likely to be a novice because any given novice is more likely to fail to identify a print (P=.2545) than an expert (P=.0788).
+
+## Q 2
+
+### A
+
+$$P(Positive|User) =  \frac{50} {100} = 0.5 $$
+
+### B
+
+$$P(Negative|NonUser) =  \frac{891} {900} = 0.99 $$
+
+### C
+
+$$ P(User|Positive) = \frac{P(Positive|User) \times P(User)}{P(Positive)} = \frac{0.5 \times \frac{100} {1000}} {\frac{59} {1000}} = .8474  $$
+
+## Q 3
+
+### Proof of the Theorem 3.1  
+Basically, you have k different pots, each with n different objects inside of them.  The effect of drawing an object from one pot does not have any effect on drawing an object from a different pot. 
+
+#### Base Cases
+
+For 1 pot, the number of different objects that can be drawn is $n_1$, the number of objects in the pot.
+For 2 pots, for each object drawn from pot 1, of which there are $n_1$ objects, there are $n_2$ different possibilities for a drawn object.  Thus, there are $n_1*n_2$ total possible samples.
+
+#### Inductive Step
+
+For k+1 objects, for each object drawn from pot k, of which there are $n_k$ objects, there are $$n_{k+1}$$ different possibilities for a drawn object.  Thus, there are $$ n_1*n_2*...*n_k*n_{k+1} $$ total possible samples.
+
+The number of different samples that can be formed from drawing one object from each pot is equal to the sizes of the different pots multiplied together.
+
+
+## Q 4
+
+### Proof of Theorem 3.2
+
+There are N elements, from which n are selected and arranged in n positions *in a distinct order*
+
+Hence, the number of possible objects that can be chosen for the first position is N.  For the second position, the number of possible objects in $N-1$, since we already have taken 1 item.  For the third position, there are $N-2$ possible objects, since we have already taken 2 objects from N.  For the $n^{th}$ position we would have $(N - n - 1)$ ways of filling the position.  By using the multiplicitive rule, we can obtain the following:
+
+$$ (N)*(N-1)*(N-2)*...*(N-n+2)*(N-n+1) $$
+
+Symplifiying with a factorial, we get $$ P^N_n = \frac{N!}{(N-n)!} $$
+
+## Q 5
+
+### Proof of Theorem 3.3
+
+There are N different elements and we want to partition them into k different sets.  The number of different partitions is $A = \frac{N!} {(n_1!)(n_2!)...(n_k!)}$
+
+Using the permutations rule, we want to find the number of ways to arrange N elements in N position, which gives us $N!$.
+
+By the multiplication rule, we can rewrite $N!$ as $$N! = (A)(n_1!)(n_2!)...(n_k!)$$
+
+Solving for A gives us  $$A = \frac{N!} {(n_1!)(n_2!)...(n_k!)}$$
+
+## Q 6
+
+### Proof of Theorem 3.4
+
+We want to select a sample of n elements from a set of N elements into 2 groups (so k = 2).  The first group is n, the number of elements that are selected.  The second group is $(N-n)$, or the number of elements that aren't selected.
+
+Thus $$ A = \frac{N!} {n!(N-n)!} = {N \choose n} $$, which is the number of different samples of n that can be selected from N.
+
+## Q 7
+
+### A
+```{r}
+.09 + .30 + .37 + .20 + .04
+```
+The probabilities do indeed sum to 1.
+
+### B
+
+$$ P(3 \cup 4) = P(3) + P (4) = .24 $$
+
+### C
+
+$$ P(0 \cup 1) = P(0) + P (1) = .39$$
+
+## Q 8
+
+### A
+
+This satisfies the probability distribution of a discrete random variable because the probability for each y is between 0 and 1 and the total probability sums to 1.  
+```{r}
+.17 + .10 + .11 +.11 +.10 + .10 +.07+.05+.03+.02+.02+.02+.02+.02+.01+.01+.01+.01+.01+.005+.005
+```
+
+### B
+
+$$ P(Y \ge 10 ) = P(10) + P(11) +...+P(19) + P(20) = 0.14 $$
+
+### C
+
+Mean = $yP(y)$ for all y = 4.65
+```{r}
+x = c(.17,.10,.11,.11,.10,.10,.07,.05,.03,.02,.02,.02,.02,.02,.01,.01,.01,.01,.01,.005,.005)
+y = c(0:20)
+z = x*y
+mu = sum(z)
+mu
+```
+
+Variance = 65.236
+```{r}
+# compute the sum using objects defined above
+w = (y-mu)^2
+
+# 1/N
+sum(w)/length(w)
+```
+
+### D
+
+$$P(0 \le Y \lt 7) = .17 + .1 + .11 + .11 + .1 + .1 + .07  = 0.76$$ 
+
+## Q 9
+
+### A
+
+$P(Y=10)=.0013$
+```{r}
+dbinom(10, 25, .7)
+```
+
+### B
+
+$P(Y\le 5) = 3.457*10^{-7}$
+```{r}
+pbinom(5, 25, .7)
+```
+```{r}
+
+```
+
+### C
+
+Mean = $np$ = 17.5
+Variance = $npq$ = 5.25
+```{r}
+25*.7
+25*.7*.3
+```
+
+### D
+
+We would expect to see, on average, 17.5 people in our sample to be foreign nationals.  Furthermore, we expect there to be small variance about the mean, or most samples will contain close to 17.5 foreign nationals.
+
+## Q 10
+
+### A
+
+
+$$P(5,5,5,5,5,5,5,5,5,5) = \frac{50!} {5!*5!*5!*5!*5!*5!*5!*5!*5!*5!} * (.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5*(.1)^5 = 4.9120\times 10^{-7}$$
+```{r}
+dmultinom(c(5,5,5,5,5,5,5,5,5, 5), prob=c(5,5,5,5,5,5,5,5,5,5))
+```
+
+### B
+
+Using dmultinom. P(Track1Underused) = 0.1066
+```{r}
+# Track 1 vs the field
+c =c(dmultinom(c(2,48), prob=c(1,9)), dmultinom(c(1,49), prob=c(1,9)), dmultinom(c(2,48), prob=c(0,50)))
+sum(c)
+```
+
+## Q 11
+
+### A
+
+This is a Geometric Probability distribution because r = 1.  Therefore, $p(y) = pq^{y-1}$
+
+### B
+
+$E(Y) = \mu = \frac 1 p = \frac 1 {.6} = 1.6667$  We expect 1.667 people to be interviewed, on average, before their given reason is about the label or the packaging.
+
+### C
+
+```{r}
+dgeom(1, prob = .6)
+```
+$P(Y=1) = .24$
+
+### D
+```{r}
+1- pgeom(2, prob = .6)
+```
+$P(Y\gt 2) = .064$
+
+## Q 12
+
+### A
+
+The expected number of facilities treating hazardous waste on site is the mean, or $\frac {nr} {N} = \frac{10*8} {209} = 0.3827$
+
+### B
+
+The probability that 4 of the facilities of of 10 treat hazardous waste on site is 0.0002.
+
+```{r}
+dhyper(4, 8, 201, 10)
+```
+
+## Q 13
+
+### A
+
+Variance is lambda.  Lambda is .03.  Therefore, the variance = .03
+
+### B
+
+This is a valid poisson distribution because it meets all of the characteristics.  First, the experiment must count the number of times a particular event occurs during a given unit of time.  This holds up because casualties are rare and they measure over a span of 3 years.  The probability that an event occurs is the same for all units, which are mutually exclusive.  Because what happens on one boat is different has little to no effect on what happens on other ships, the probability can be considered mutually exclusive and the second condition is met.  The number of events that occur in one unit of time is independent of the number that occur in other units.  This assumption holds true in this case because the ships have an equal chance for casualties over time.
+
+### C
+
+$$P(0) = \frac {\lambda^0e^{-0}} {0!} = .9704$$
+```{r}
+dpois(0, .03)
+```
+
+## Q 14
+
+### A
+
+
+Because the integral over the rest of the area except for 0 to 1 is 0, the integral of the density function must equal 1.  From there, we can calculate c.
+$$ \int_0^1 2c-2cydy = 2cy - cy^2 \ |^1_0 = (2c(1) - c(1)^2) - (2c(0) - c(0)^2) = 2c -c - 0 = 1$$
+Therefore $c=1$
+
+### B
+$$ F(y) = $$
+$$ 0 \:\text{for}\: y \lt 0 $$
+$$ 2y- y^2 \:\text{for}\: 0 \le y \le 1 $$
+$$ 1 \:\text{for}\: y \gt 1 $$
+
+### C
+
+$$F(.4) = 2(.4) - (.4)^2 = .8 - .16 = .64$$
+
+### D
+
+$$F(.1 \le y \le .6) = F(.6) - F(.1)$$
+$$F(.6) = 1.2 - .36 = .84$$
+$$F(.1) = .2 - .01 = .19$$
+$$F(.6) - F(.1) = .84 - .19 = .65$$
+
+## Q 15
+
+### A
+
+Mean is the Expected value of Y.
+
+$$\int_{-5}^5 \frac{3y} {500}(25-y^2)dy = 0$$
+
+Variance is $E(Y^2) - \mu^2$.
+
+$$\int_{-5}^5 \frac{3y^2} {500}(25-y^2)dy = 5.$$
+
+Therefore, the train is, on average, 0 minutes late with a variance of 5 minutes.
+
+### B
+
+Expected value in hours would be a case of $E(cy)$, which means that the mean in hours is the mean solved for above is divided by 60, so $\frac {0} {60} = 0$.
+
+Variance would be equivalent to $c^2\sigma^2$, where c in this case is $\frac {1} {60}$, so variance would be equal to $\frac {5} {3600} = .0014$.
+Mean = 0.
+Variance = .0014.
+
+### C
+
+Solving for seconds is the same as above, except $c= 60$ instead of $c=\frac{1} {60}$.
+Mean = 0.
+Variance = 18000.
+
+## Q 16
+
+Using pnorm
+
+### A
+
+```{r}
+pnorm(45, 50, 3.2)
+```
+The probability of exceeding 45 mg per liter is .0591.
+
+### B
+
+```{r}
+1-pnorm(55, 50, 3.2)
+```
+
+The probability of the sample being below 55 mg per liter is .0591.
+
+### C
+
+```{r}
+pnorm(52, 50, 3.2) - pnorm(51, 50, 3.2)
+```
+
+The probability of the sample being between 51 and 52 mg per liter is .1113.
+
+## Q 17
+
+Using pnorm again.
+
+### A
+
+```{r}
+pnorm(700, 605, 185) - pnorm(500, 605, 185)
+```
+Probability of the rating between 500 and 700 points is .4110.
+
+### B
+
+```{r}
+pnorm(500, 605, 185) - pnorm(400, 605, 185)
+```
+
+The probability of falling between 400 and 500 points is .1512.
+
+### C
+
+```{r}
+pnorm(850, 605, 185)
+```
+
+The probability that the rating will be less than 850 points is .9073.
+
+### D
+
+```{r}
+1- pnorm(1000, 605, 185)
+```
+
+The probability that the rating will exceed 1000 points is .0164.
+
+### E
+
+```{r}
+qnorm(.9, 605, 185)
+```
+
+Only 10% of cars will exceed a rating of 842.087.
+
+

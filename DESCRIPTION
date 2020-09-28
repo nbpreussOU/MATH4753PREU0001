@@ -5,7 +5,7 @@ Version: 0.3.1
 Author: Nathan Preuss
 Maintainer: Nathan Preuss ???<Nathan.B.Preuss-1@ou.edu>
 Description: Contains a variety of functions used in MATH 4753 labs.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/nbpreussOU/MATH4753PREU0001

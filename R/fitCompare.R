@@ -24,5 +24,5 @@ fitCompare <- function(m1, m2)
   {
     result <- "same"
   }
-  return (result)
+  return (list(x, result))
 }
