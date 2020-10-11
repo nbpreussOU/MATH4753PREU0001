@@ -1,0 +1,177 @@
+---
+title: 'Assignment 3'
+author: "Nathan Preuss"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions{}
+
+## I have solved XXX/XXX Questions.
+
+## Q 1
+
+### A
+
+We are looking for an interarrival time of 2 minutes (120 seconds) or more, or $P(y \ge 120)$. 
+pexp requires that the $rate = \frac{1} {\mu}$, so I passed $\frac{1} {95}$ instead of $95$. 
+```{r}
+1-pexp(120, 1/95)
+```
+
+### B
+
+We are looking to see if the data's sample mean and variance are close to the mean and standard deviation of an exponential distribution with $\beta = 95$ 
+For reference, the mean of an exponential distribution is $\beta$ and the variance is $\beta^2$. In this case, the exponential distribution would lead us to believe that $\mu = 95$ and $\sigma^2 = 9025$.
+
+```{r}
+phishing <-read.csv("PHISHING.csv")
+mean(phishing$INTTIME)
+var(phishing$INTTIME)
+(95.523 - 95) / 95
+(8379-9025)/9025
+```
+
+In reality, the mean is $95.5237$ and the variation is $8379.411$.  Because the sample mean is almost exactly equal to the theoretical mean, and because the sample variance is quite close to the theoretical variance, the data appear to follow an exponential distribution with $\beta = 95$.
+
+## Q 2
+
+### A
+
+The textbook for the course defines the mean for a gamma distribution to equal $\mu = \alpha\beta$ and the variance to equal $\sigma^2 = \alpha\beta^2$.  Plugging the numbers given $\alpha = 3$ and $\beta = 0.07$ into those two equations, we find that $\mu = 0.21$ and $\sigma^2 = 0.0147$
+
+### B
+
+The maximum flood level was found to be .60 Million Cubic ft/sec.  In general, we would expect most maximum flood levels to be within 3 standard deviations of the mean.  In this case, $\mu + 3 \sigma = .5737$.  Since .60 Million is greater than .5737 Million, this data point is an outlier, and therefore should not be expected. In addition, I reparameterized the function in R to give the probability of finding a maximum flood level greater than .60 Million Cubic ft/sec.
+
+```{r}
+1-pgamma(.60, 3, 1/.07)
+```
+
+Indeed, R gives us the probability of a Maximum Flood Level greater than .60 Million cubic feet to be about $0.8772\%$, which is very unlikely and should not be expected.
+We can infer that the maximum flood level distribution was extremely higher than normal during this four year period. 
+
+## Q 3
+
+### A
+
+The textbook for the course defines the mean for a gamma distribution to equal $\mu = \alpha\beta$.  For formula A, $\mu_A = \alpha_A\beta_A= 2\times2 = 4$, and for formula B, $\mu_B = \alpha_B\beta_B = 1\times4 = 4$.  
+
+### B
+
+The textbook for the course defines the variance for a gamma distribution to equal $\sigma^2 = \alpha\beta^2$. For formula A, $\sigma^2_A = \alpha_A\beta_A^2= 2\times2^2 = 8$, and for formula B, $\sigma^2_B = \alpha_B\beta_B^2 = 1\times4^2 = 16$.
+
+### C
+
+In order to calculate which tear gas is more likely to cause a reaction in less than a minute, we are going to calculate $P(y\le1)$ for formulas A and B using pgamma and compare them.
+
+```{r}
+# formula A
+pgamma(1, 2, 1/2)
+
+# formula B
+pgamma(1, 1, 1/4)
+```
+For formula A, the probability of causing a reaction in less than 1 minute is 9.0204%, and for formula B the probability is 22.1199%.  Therefore, formula B is more likely to cause a reaction in less than 1 minute.
+
+## Q 4
+
+### A
+
+The proportion of washers that need to be repaired can be modeled as a weibull distribution with $P(y\le2)$.  After reparameterizing the function for R, we get
+```{r}
+pweibull(2, 2, 2)
+```
+.6321 as the proportion of washer that need repair within the first two years.
+
+### B
+
+Using the definition for mean and variance from the textbook.
+$$\mu = \beta^{\frac{1} {\alpha}}\Gamma\left(\frac{\alpha + 1} {\alpha}\right) = 4^{\frac {1} {2}}\Gamma\left(\frac{2+1}{2}\right) = 2\times .88623 = 1.77246$$
+$$\sigma^2 = \beta^{\frac{2} {\alpha}}\left[\Gamma(\frac{\alpha + 2} {\alpha}) - \Gamma^2(\frac{\alpha + 1} {\alpha})\right] = 4^{\frac{2}{2}}\left[ \Gamma\left(\frac{4} {2}\right) - \Gamma^2\left(\frac{3}{2}\right)\right] = 4(1-.88623^2) = .8583$$
+$$\sigma = \sqrt{\sigma^2} = \sqrt{.8583} = .9265$$
+
+The mean is 1.77246 and the standard deviation is .9265.
+
+### C
+
+$$P(\mu - 2\sigma \le Y \le \mu + 2\sigma) = P(-0.08054 \le Y \le 3.62546)$$
+
+This can be represented by taking the pweibull(3.62546) - pweibull(-0.08054).  Using a reparameterized weibull in R, we find that the probability of such an event happening to be .96259.
+
+```{r}
+pweibull(3.62546, 2, 2) - pweibull(-0.08054, 2, 2) 
+```
+
+### D
+
+To see if it is likely that $P(Y \gt 6)$, we will calculate the odds of such an event happening in R.
+
+```{r}
+1-pweibull(6, 2, 2)
+```
+
+Such an event is extremely unlikely, with a $P(Y \gt 6) = .00012$.
+
+## Q 5
+
+### A
+
+The textbook defines the mean and variance of a beta function such that $\mu = \frac{\alpha}{\alpha + \beta}$ and $\sigma^2 = \frac{\alpha\beta}{(\alpha + \beta)^2(\alpha+\beta+ 1)}$.  Plugging in the given valuess for alpha and beta gives us $\mu = \frac {2} {11} = .18182$ and $\sigma^2 = \frac{18} {(11)^2(12)} = .01240$.
+
+### B
+
+We are going to use pbeta to find $P(y\ge.40)$, which represents the probability that in any given year at least 40% of the hardware repair budget will go to the laser printer.
+
+```{r}
+1-pbeta(.4, 2, 9)
+```
+
+$P(y\ge.40) = .0464$.
+
+### C
+
+We are going to use pbeta to find $P(y\le .10)$, which reprensts the probability in any given year of at most 10% of the hardware repair budget going to the color printer.
+
+```{r}
+pbeta(.1, 2, 9)
+```
+
+$P(y\le .10) = .2639$  
+
+## Q 6
+
+### A
+
+I am going to compare the given function with $\frac{\alpha}{\beta}y^{\alpha-1}e^{-y^\alpha\beta}$
+$\alpha = 2$ and $\beta = 16$.
+
+### B
+
+Computing the mean and variance.
+$$\mu = \beta^{\frac{1} {\alpha}}\Gamma\left(\frac{\alpha + 1} {\alpha}\right) = 16^{\frac {1} {2}}\Gamma\left(\frac{2+1}{2}\right) = 4\times .88623 = 3.54492$$
+
+$$\sigma^2 = \beta^{\frac{2} {\alpha}}\left[\Gamma(\frac{\alpha + 2} {\alpha}) - \Gamma^2(\frac{\alpha + 1} {\alpha})\right] = 16^{\frac{2}{2}}\left[ \Gamma\left(\frac{4} {2}\right) - \Gamma^2\left(\frac{3}{2}\right)\right] = 16(1-.88623^2) = 3.4335$$
+
+### C
+
+The probability that a chip will not fail before 6 years can be represented in R as a pweibull function.
+
+```{r}
+1-pweibull(6, 2, 4)
+```
+
+In this case, the probability that a chip will not fail is .1053.
+

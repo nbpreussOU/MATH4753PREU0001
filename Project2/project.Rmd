@@ -1,0 +1,462 @@
+---
+title: "MATH 4753 Project 2"
+author: "Nathan Preuss"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: show
+    csl: biomed-central.csl
+    df_print: paged
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    number_sections: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    df_print: kable
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    highlight: tango
+    toc: yes
+    toc_depth: 4
+bibliography: project.bib
+abstract: This project is all about applying SLR to real data using R.  In this case, SLR will be used to analyze a data set showing the realtionship between the number of deaths from a certain disease and the amount of money donated to charities committed to fighting that disease.
+---
+
+# Introduction
+
+I am trying to determine the relationship between deaths from a disease and the amount donated to charities for that same disease.  In this section I will discuss the data, its variables, how it was constructed, and why I chose this for my project.  
+
+## What are the variables? 
+
+Listed below is a table of the diseases and the sampled charities involved in fighting that disease.  The list of diseases is a categorical variable, and the list of charities is categorical as well.
+
+### Table 1: Diseases and the corresponding charities
+
+<center>
+
+| Disease | Charity |
+| ------ | -------|
+| Brain Cancer  | American Brain Tumor Association  |
+| Kidney Disease  | American Kidney Fund  |
+|   | National Kidney Foundation  |
+|   | NephCure Kidney International  |
+|   | PKD Foundation  |
+|   Liver Disease | American Liver Foundation |
+| Lung Cancer | LUNGevity Foundation | 
+|  | Lung Cancer Research Foundation |
+| Lung Disease | American Lung Foundation | 
+| Colorectal Cancer | Crohn's and Colitis Foundation | 
+| Parkinson's Disease | Michael J. Fox Foundation for Parkinson's Research | 
+| Breast Cancer | Breast Cancer Prevention Partners | 
+| | Breast Cancer Research Foundation | 
+|  | National Breast Cancer Coalition Fund | 
+| Prostate Cancer | Prostate Cancer Foundation | 
+| Leukemia | Leukemia and Kymphoma Society | 
+| Multiple Myeloma | Multiple Myeloma Research Foundation| 
+| Ovarian Cancer | Ovarian Cancer Research Allinace | 
+| Tuberculosis | TB Alliance | 
+| Pancreatic Cancer | Pancreatic Cancer Action Network|
+| | The Lustgarten Foundation for Pancreatic Cancer Research | 
+|Alzheimer's Disease | Alzheimer's Association | 
+| | Cure Alzheimer's Fund |
+| Bladder Cancer | Bladder Cancer Advocacy Network |
+| Thyroid Cancer | THANC Foundation | 
+
+</center>
+
+### Table 2: An interactive data table 
+
+This table highlights the amount of donations and the number of deaths from a given disease while displaying the full data set.  The amount of donations (in dollars), the number of deaths, and the percentage of deaths are all discrete variables.
+
+```{r donataions}
+library(readxl)
+MATH4753Data <- read_excel("MATH4753Data.xlsx")
+df <- as.data.frame(MATH4753Data)
+
+library(DT)
+datatable(
+  df,filter = 'top', options = list(
+  pageLength = 5, autoWidth = TRUE, editable = TRUE, dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print')),
+caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: center;',
+    'Table 2: ', htmltools::em('Project 2 Interactive Data Table.')
+  )
+) %>%
+  formatStyle('Donations',
+  background = styleColorBar(range(df$Donations), 'lightgreen'),
+  backgroundSize = '98% 88%',
+  backgroundRepeat = 'no-repeat',
+  fontWeight = 'bold',
+  backgroundPosition = 'center')%>%
+  formatStyle('NumberDeaths',
+  background = styleColorBar(range(df$NumberDeaths), 'lightblue'),
+  backgroundSize = '98% 88%',
+  backgroundRepeat = 'no-repeat',
+  fontWeight = 'bold',
+  backgroundPosition = 'center')
+```
+
+### Figure 1
+
+This is a simple plot of the data points for this project, color coded by diesease.
+
+```{r}
+library(ggplot2)
+
+# Number 1
+x<-ggplot(df, aes(x=NumberDeaths, y=Donations)) + geom_point(aes(color = factor(Disease))) + ggtitle("Figure 1: Number of Deaths versus Donations given Disease")
+x
+```
+
+## Where was the data collected?
+
+I collected the data from freely available data sets from CharityWatch, Charity Navigator, and the CDC.
+
+## How were the data collected? 
+
+I went to 3 different websites to gather different data on charities and death rates.  CharityWatch [@charitywatch_2020] and Charity Navigator [@charitynavigator_2020] gave me information about the financials about different charities, specifically about how much money they took in donations.  I took information about the death rates for specific diseases from the CDC [@cdc_2015] and built a table where charities that focused on a specific cause of death (i.e. lung cancer, not cancer in general) were matched up with the number of people who died from that cause of death.  
+
+### Assumption about the data
+
+1. Each charity is equally effective.  For example, \$1 donated to breast cancer shouldn't save more lives than \$1 to fight Kidney Disease.  If that were the case, then people would donate because one charity was effective at saving lives, rather than they wanted to prevent others from dying from the same disease as their loved one.
+2. The charities for which data are gathered represent the majority of donations for a particular disease. That is to say, the breast cancer charities shouldn't represent only 30% of the total amount of donations to fight breast cancer while the pancreatic cancer charities represent 80% of the total donations to fight pancreatic cancer.  I am assuming that this number is fairly constant across the different diseases which leads me to point
+3. Sampling Bias.  There is no comprehensive data for what I am looking for, especially for the amount of money donated to specific charities.  I just took data that was freely available, which may or may not be representative of the population.
+4. Time.  The latest death statistics are from 2015, but the charity financials are mostly from 2018, 2019.  I am assuming that about the same number of people died of the same causes in future years as in past years.
+
+## What is your interest in the data?
+
+<center>
+![Doing Good Better [@macaskill_2016]](dgb.JPG){width=30%}
+
+
+</center>
+
+As I was reading *Doing Good Better*, by William Macaskill, I had an idea.  The author mentioned that most people donate to charities ineffectively.  He claims that most people donate to charities whose cause they believe in or to prevent others from dying in the same way as their loved one; instead of donating to the charities that can maximize the number of lives saved [@macaskill_2016].  Under this logic, I would expect to see more donations to charities that try and fight diseases that cause more deaths than diseases that cause fewer deaths.  This area didn't appear to have much original research, and so I was curious to see if I could prove or disprove that hypothesis.
+
+## What is the story behind the data?
+
+All deaths are equal, but some deaths are more equal than others.  If a loved one dies from a preventable disease, it seems like a reasonable assumption that they might donate to charity to try and save others from the disease.  If more people die from a given disease, then more donations should go to fight that disease.  I wanted to test to see if this was really the case.
+
+## Why was it gathered? 
+
+I gathered this data because I was interested in seeing what the relationship between the two variables were.  
+
+## What problem do you wish to solve?
+
+All deaths being equal, I would expect to see a linear relationship between the number of deaths and the amount of donations toward charities for reasons mentioned above.  However, I suspect that that is not the case, and I am curious as to the true nature of the relationship.
+
+# Theory needed to carry out SLR
+
+## Background for Choosing SLR
+I think that the amount of donations (y) tends to increase linearly as the number of deaths of a disease (x) increases, with the amount of donations being the dependent variable, and the number of deaths as the independent variable. Just looking from the preliminary graph of the points above, I know that the data points are quite spread out, such that it might be easier to use the data points to form a constellation rather than fit a linear model.  As a result, I will have to use a probabilistic model in my analysis, and simple linear regression (SLR) is the on I will use in my analysis.  The following theory behind SLR comes from the textbook [@mendenhall_sincich_2016].
+
+## Assumptions of SLR
+
+SLR assumes that the mean value of the y data, for any given value for the x data, will end up making a straight line when graphed.  Any points that deviate above or below this line have a deviation equal to $\epsilon$.  For a function with one x variable, the resulting SLR function can be written as:
+$$y = \beta_0 + \beta_1x_i + \epsilon_i$$
+Where $\beta_1$ and $\beta_2$ are currently unknown coefficients, $\beta_0 + \beta_1x_i$ is the mean value of y for any given $x_i$, and $\epsilon$ is the random error.
+
+In order to use SLR, several assumptions need to be validated about $\epsilon$.  
+
+* Because we know that the data points will deviate from the average, either higher or lower, they will have an accompanying error to some extent.  However, taken across the entire data set, we can expect the mean of the probability distribution of $\epsilon$ to be  $0$. 
+* Furthermore, we can expect that the variance of the probability distribution of $\epsilon$ is constant for all values for x, such that $V(\epsilon) = c$ for some constant $c$.
+* In addition, we are assuming that the probability distribution of $\epsilon$ is a normal distribution.
+* And finally, the errors associated with different data points are independent - the error of one data point has no bearing on the error from a different data point.
+
+Using these assumptions, we can rewrite the SLR equation from above to be more useful:
+
+$$E(y) = E(\beta_0 + \beta_1x_i + \epsilon_i)$$
+$$E(y) = \beta_0 + \beta_1x_i + E(\epsilon_i)$$
+$$E(y) = \beta_0 + \beta_1x_i + 0$$
+$$E(y) = \beta_0 + \beta_1x_i$$
+
+Thus, the mean value of $y$ for any given value of $x$ will graph as a straight line, with a y-intercept of $\beta_0$ and a slope of $\beta_1$.
+
+# Creating and Verifying Models
+I will be creating 2 different models, a linear model and and exponential model.  To create my exponential model, I will be taking the natural logarithm of the amount of money donated to charities and appending that as another column on my dataframe, and then create a linear model where the Y-axis has a logarithmic scale. 
+
+```{r}
+# create the new colum
+library(SciViews)
+lnVals <- ln(df$Donations)
+df = cbind(df, lnVals)
+
+deaths.lm <- with(df, lm(Donations~NumberDeaths))
+deaths.exp <- with(df, lm(lnVals~NumberDeaths))
+```
+
+## Checks on validity
+
+I am going to preform multiple checks for validity for both of the models.
+
+### Errors distributed Normally
+
+First, I am going to check that the errors are distributed normally, such that $\epsilon_i \sim N(0,\sigma^2)$.  To do this, I will do a Shapiro-wilk test for both models.
+
+#### Shapiro-wilk Linear
+
+```{r}
+library(s20x)
+normcheck(deaths.lm, shapiro.wilk = TRUE)
+```
+
+The P-value is less than $0.05$, so the null hypothesis that the errors are distributed normally is rejected.  This means that this model fails one of the basic assumptions of SLR, and will need to be modified for continued analysis.  From the look of the graph, there are three outliers that warrant further investigation.
+
+##### Using Cook's Distance to investigate outliers
+
+To identify potential outliers, I will create a Cook's plot to determine which data points have a high Cook's distance.  Higher Cook's distance means that the specified data point has an outsized effect on the regression analysis.  
+
+```{r}
+library(olsrr)
+ols_plot_cooksd_chart(deaths.lm)
+```
+
+Observations 4, 5, and 15 all have significantly high Cook's distances.  Removing data points with high Cook's distances is one way to correct for their impact.  I will start by removing the observation with the highest Cook's distance and see how that effects the cooks plot
+
+```{r}
+#removing the larges
+#copying the data into a new data frame to that the exponential model isn't affected by these removal
+
+#remove observation 4
+df.removed1 <- df[-4, ]
+deaths.lm.removed1 <- with(df.removed1, lm(Donations~NumberDeaths))
+ols_plot_cooksd_chart(deaths.lm.removed1)
+```
+
+After removing observation 4, we see that the new observation 4 (the old observation 5) still has a extremely large cooks distance. Nevertheless, I am going to rerun the Shapiro-Wilks test to see if it is possible to accept the null-hypothesis.
+
+```{r}
+normcheck(deaths.lm.removed1, shapiro.wilk = TRUE)
+```
+
+While this time the p-value (.062) is greater than .05, it is not much greater than .05, so I technically accept the null hypothesis that the data points are normally distributed .  Because the new Cook's distance plot showed an observation with a high Cook's distance, I am going to correct for that by removing that observation from the data set.
+
+```{r}
+#removing the largest observation
+
+#remove observation 4
+df.removed2 <- df.removed1[-4, ]
+deaths.lm.removed2 <- with(df.removed2, lm(Donations~NumberDeaths))
+ols_plot_cooksd_chart(deaths.lm.removed2)
+```
+
+While there are still observations with high Cook's distances, they seem much more reasonable than the previous two Cook's distance plots.  Let's re-run the Shapiro-wilks test to see if the p-value is much greater than .05.
+
+```{r}
+normcheck(deaths.lm.removed2, shapiro.wilk = TRUE)
+```
+
+In this case, the P-value is 0.395, much higher than .05.  As a result, I will use the modified model with two removed data points in place of the original model.
+
+#### Shapiro-wilk Exponential Model
+
+```{r}
+normcheck(deaths.exp, shapiro.wilk = TRUE)
+```
+The P-value (.099) is greater than $0.05$ (though not by much), so the null hypothesis that the errors are distributed normally is accepted.  
+
+### Constant variance
+
+With both models passing the Shapiro-wilks test, next I am going to look to see if the models have constant variance.  To do that, I will be creating residual vs fitted plots for both the linear and the exponential model.
+
+#### Residual vs fitted values for the linear model
+
+I will be creating a trendscatter plot on the residual and fitted values for the linear model. 
+```{r}
+linear.res <- residuals(deaths.lm.removed2)
+linear.fit <- fitted(deaths.lm.removed2)
+trendscatter(linear.res~linear.fit, f=0.5, data=df.removed2, main="Linear Model Residuals vs. Fitted with f=0.5")
+```
+
+Well, the residuals vs. the fitted aren't a horizontal line, and instead they look like a positive quadratic equation. As a result, I am going to add a quadratic term to the linear model and see if that addresses the issues with the residuals vs fitteds.
+
+```{r}
+quad.lm <- with(df.removed2, lm(Donations~NumberDeaths + I(NumberDeaths^2)))
+quad.res <- residuals(quad.lm)
+quad.fit <- fitted(quad.lm)
+trendscatter(quad.res~quad.fit, f=0.5, data=df.removed2, main="Quadratic Model Residuals vs. Fitted with f=0.5")
+```
+
+The quadratic model did not drastically effect the residuals/fitted plot.  While trendscatter continues to point out a pattern in the residuals, it also seems to be ignoring two of the data points.  As a result, I am not putting too much faith into the coefficients of the model and I probably should reject this model, but I will continue to analyze it for the sake of the project.  In addition, I am going to move forward analyzing the linear model, since the quadratic did not result in any improvements.
+
+#### Residual Vs Fitted for the Exponential Model
+
+I will be creating a trendscatter plot on the residual and fitted values for the exponential model. 
+
+```{r}
+exp.res <- residuals(deaths.exp)
+exp.fit <- fitted(deaths.exp)
+trendscatter(exp.res~exp.fit, f=0.5, data=df, main="Exponential Model Residuals vs. Fitted with f=0.5")
+```
+
+There is no recognizable pattern in the residual vs. fitted for this plot.  As a result, the exponential model passes this test.
+
+### Zero mean value of $\epsilon$ for both models.
+
+Next, I am going to analyze the residuals ($\epsilon$) of both the linear and the exponential model to see if their mean is 0.
+
+```{r}
+summary(residuals(deaths.lm.removed2))
+summary(residuals(deaths.exp))
+```
+
+Both models have a 0 mean value for $\epsilon$.
+
+### Independence of data for both models
+
+Since both models have only one independent variable, I cannot check for covariance between the independent variables.  Thus, I am going to assume that both models have independent data.
+
+# Model selection
+
+I will now be comparing the models to see which one better represents the data.  Based on the assumptions of validity, I am already leaning towards the exponential model, but let's see what an analysis of adjusted R-squared produces.
+
+## Use adjusted $R^2$ to compare models
+
+I will be using adjusted R-squared to compare the model together.  The R-squared for a given model represents how well it fits the particular data.  R-square values close to 1 means that the model fits the data well, and scores near 0 means that the model does not fit the data well.
+
+```{r}
+summary(deaths.lm.removed2)
+summary(deaths.exp)
+```
+
+I have never seen an adjusted R-squared value of 0.0194, which I wasn't expecting.  Needless to say, the linear model is much more accurate than the exponential model.  So now I'm in a bit of a bind, the linear model kinda clears the assumptions for a linear model and has a higher adjust R-squared, but the exponential model meets all of the assumptions and has an abysmally low R-squared.  
+
+If you remember back, I had to remove a couple of outliers for the linear model, and I did not remove them for the exponential model.  So I'm going to check to see if the outliers make a difference on the model.
+
+### Using Cook's Distance to investigate outliers again
+
+I will be using Cook's distance to identify any potential outliers, and then remove them from the model to account for them.
+
+```{r}
+library(olsrr)
+ols_plot_cooksd_chart(deaths.exp)
+```
+
+I think removing data point 4 from the data set would be a great idea, given it's high Cook's Distance.
+
+```{r}
+#remove observation 4
+df.removed.exp <- df[-4, ]
+deaths.exp.removed <- with(df.removed.exp, lm(lnVals~NumberDeaths))
+ols_plot_cooksd_chart(deaths.exp.removed)
+```
+
+It appears that there is still an outlier, the new data point 4 is acting as quite the outlier.
+
+```{r}
+#remove observation 4 again
+df.removed.exp1 <- df.removed.exp[-4, ]
+deaths.exp.removed1 <- with(df.removed.exp1, lm(lnVals~NumberDeaths))
+ols_plot_cooksd_chart(deaths.exp.removed1)
+```
+
+This Cook's Distance plot is much more reasonable.  Having altered the data, I will quickly retest this model to see if it meets the core assumptions for SLR.
+
+```{r}
+# Shapiro-wilks
+library(s20x)
+normcheck(deaths.exp.removed1, shapiro.wilk = TRUE)
+
+# residuals vs fitted
+exp1.res <- residuals(deaths.exp.removed1)
+exp1.fit <- fitted(deaths.exp.removed1)
+trendscatter(exp1.res~exp1.fit, f=0.5, data=df, main="Exponential Model Residuals vs. Fitted with f=0.5")
+
+summary(residuals(deaths.exp.removed1))
+```
+
+For the shapiro-wilks test, this model has a p-vale of 0.115, which is greater than .05, which means that the null hypothesis is accepted and the errors are distributed normally.
+
+For the residual vs. fitted test, there is no discernible pattern in the residuals vs fitted, so it passes that test.
+
+The mean value of the errors is 0, meaning that this model passes the third assumption.
+
+And, the data is still independent.
+
+## Using Adjusted R-Squared to compare models, take 2
+
+```{r}
+summary(deaths.lm.removed2)
+summary(deaths.exp.removed1)
+```
+
+The exponential model did improve it's R-squared, up to .2196, which is still lower than the linear model.  As a result, I am going to analyze the linear model from here on out.
+
+# Analysis of the Linear Model
+
+In this section I am going to analyze the results of the linear model developed in the previous section.
+
+## Basic Plot of Number of Deaths vs. Donations
+
+Let's look at the plot of the data after removing the outliers.
+
+```{r}
+library(ggplot2)
+df.final <- df.removed2[,-6]
+x<-ggplot(df.final, aes(x=NumberDeaths, y=Donations)) + geom_point(aes(color = factor(Disease))) + ggtitle("Figure 2: Number of Deaths versus Donations given Disease")
+x
+```
+
+It appears that the two outliers that we removed were in the bottom right hand corner.  
+
+## Add the trend to the data
+
+Now, I am going to add the trend line to the plot.
+
+```{r}
+with(df.final,
+plot(Donations~NumberDeaths,bg="Blue",pch=21,ylim=c(0,1.1*max(Donations)),xlim=c(0,1.1*max(NumberDeaths)))
+)
+abline(deaths.lm.removed2)
+```
+
+It appears that with each additional death, the amount of donations increases.
+
+## Interpretation of the summary of the model
+
+```{r}
+summary(deaths.lm.removed2)
+```
+
+Here is the summary of the linear model.  Using the data provided in the summary, I can find the $\beta_0$ and the $\beta_1$ values.
+In this case, $\beta_0 = 2,073,000$ and $\beta_1 = 2,894$, thus giving us the equation $y = 2894x + 2073000$.  In other words, for each addition death, a charity, on average, receives another \$2,894, and has about \$2 million in baseline funding. 
+
+This model has a multiple R-squared of .4734, meaning that the model does an adequate job of describing the data.
+
+## Calculating Confidence Intervals for $\beta$ parameter estimates
+
+Next, I will calculate the 95% confidence intervals for $\beta_0$ and $\beta_1$.
+
+```{r}
+confint(deaths.lm.removed2)
+```
+
+The confidence interval for the intercept is quite large, falling between -75,669,882 and 79,816096, which is quite a large span of numbers.  The confidence interval for $\beta_1$ is 1144 to 4643.  This means that the baseline funding for an organization falls in a wide range of possible values, including several values that aren't feasible, as it makes little sense for a charity to have negative amounts of funding.  On the other hand, the confidence interval for $\beta_1$ is much more reasonable, indicating that charities would receive between \$1144 and \$4643 per additional death.
+
+### Use of `predict()`
+
+Next, I am going to predict the amount of donations a charity based on a given number of deaths.
+
+### Use of `ciReg()`
+
+### Check on outliers using cooks plots
+
+Remember to interpret this plot and all other plots
+
+
+
+# Conclusion
+## Answer your research question
+## Suggest ways to improve model or experiment
+
+
+# References
+  

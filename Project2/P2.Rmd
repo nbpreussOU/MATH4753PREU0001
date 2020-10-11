@@ -22,6 +22,13 @@ df <- as.data.frame((MATH4753Data))
 head(df)
 ```
 
+### Data Source
+
+https://www.charitynavigator.org/index.cfm?FromRec=140&bay=search.results&cgid=5&cuid=14
+https://www.cdc.gov/nchs/data/dvs/LCWK10_2015.pdf
+https://www.charitywatch.org/top-rated-charities
+
+
 ## Including Plots
 
 that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

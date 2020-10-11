@@ -1,0 +1,258 @@
+---
+title: "Lab 7"
+author: "Nathan Preuss"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: show
+    csl: biomed-central.csl
+    df_print: paged
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    number_sections: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 1
+
+Working Directory
+
+```{r}
+getwd()
+```
+
+# Task 2
+
+## 4 Plots
+
+```{r}
+#This is a model R function that you can alter for other statistics
+# Copy this function twice and alter the two copies to make sampling distributions from the T distribution
+mychisim<-function(n1=10,sigma1=3,mean1=5,iter=1000,ymax=0.1,...){    # adjust ymax to make graph fit
+y1=rnorm(n1*iter,mean=mean1,sd=sigma1)# generate iter samples of size n1
+
+data1.mat=matrix(y1,nrow=n1,ncol=iter,byrow=TRUE) # Each column is a sample size n1
+
+ssq1=apply(data1.mat,2,var) # ssq1 is s squared
+
+w=(n1-1)*ssq1/sigma1^2      #chi-sq stat
+
+hist(w,freq=FALSE, ylim=c(0,ymax), # Histogram with annotation
+main=substitute(paste("Sample size = ",n[1]," = ",n1," statistic = ",chi^2)),
+xlab=expression(paste(chi^2, "Statistic",sep=" ")), las=1)
+lines(density(w),col="Blue",lwd=3) # add a density plot
+curve(dchisq(x,n1-1),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+title=expression(chi^2==frac((n[1]-1)*s^2,sigma^2)) #mathematical annotation -see ?plotmath
+legend(locator(1),c("Simulated","Theoretical"),col=c("Blue","Red"),lwd=4,lty=1:2,bty="n",title=title) # Legend #
+return(list(w=w,summary=summary(w),sd=sd(w),fun="Chi-sq")) # some output to use if needed
+}
+windows()
+chism=mychisim(n1 = 10, iter=1000, sigma1 = 4, mean1 = 10, ymax=0.13)
+chism=mychisim(n1 = 20, iter=1000, sigma1 = 4, mean1 = 10, ymax=0.08)
+chism=mychisim(n1 = 100, iter=1000, sigma1 = 4, mean1 = 10, ymax=0.04)
+chism=mychisim(n1 = 200, iter=1000, sigma1 = 4, mean1 = 10, ymax=0.025)
+```
+
+## Histogram
+
+```{r}
+windows()
+chisq=mychisim(n1 = 10, iter=1500, sigma1 = 10, mean1 = 20, ymax=0.15)
+hist(chisq$w)
+```
+
+# Task 3
+
+## 4 Plots
+
+```{r}
+myTsim<-function(n1=10,sigma1=3,mean1=5,iter=1000,ymax=0.1,...){    # adjust ymax to make graph fit
+y1=rnorm(n1*iter,mean=mean1,sd=sigma1)# generate iter samples of size n1
+
+data1.mat=matrix(y1,nrow=n1,ncol=iter,byrow=TRUE) # Each column is a sample size n1
+
+sd1=apply(data1.mat,2,sd) # sd
+ybar=apply(data1.mat,2,mean)  # mean
+
+w=(ybar-mean1)/(sd1/sqrt(n1))      #T stat
+
+hist(w,freq=FALSE, ylim=c(0,ymax), # Histogram with annotation
+main=substitute(paste("Sample size = ",n[1]," = ",n1," statistic = ",T," iterations= ",iter)),
+xlab=expression(paste(T, "Statistic",sep=" ")), las=1)
+lines(density(w),col="Blue",lwd=3) # add a density plot
+curve(dt(x,n1-1),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+title=expression(T==frac((bar(y)-mu),s/sqrt(n1))) #mathematical annotation -see ?plotmath
+legend(locator(1),c("Simulated","Theoretical"),col=c("Blue","Red"),lwd=4,lty=1:2,bty="n",title=title) # Legend #
+return(list(w=w,summary=summary(w),sd=sd(w),fun="T")) # some output to use if needed
+}
+windows()
+tsim = myTsim(n1 = 10, iter=1000, mean1= 10, sigma1 = 4, ymax=0.45)
+tsim = myTsim(n1 = 20, iter=1000, mean1= 10, sigma1 = 4, ymax=0.45)
+tsim = myTsim(n1 = 100, iter=1000, mean1= 10, sigma1 = 4, ymax=0.45)
+tsim = myTsim(n1 = 200, iter=1000, mean1= 10, sigma1 = 4, ymax=0.45)
+```
+
+
+## Histogram
+
+```{r}
+windows()
+tsim = myTsim(n1 = 10, iter=1500, mean1=20, sigma1=10, ymax=.45)
+hist(tsim$w)
+```
+
+# Task 4
+
+## 4 Plots
+
+```{r}
+#### Two pop sampling
+mychisim2<-function(n1=10,n2=14,sigma1=3,sigma2=3,mean1=5,mean2=10,iter=1000,ymax=0.07,...){    # adjust ymax to make graph fit
+y1=rnorm(n1*iter,mean=mean1,sd=sigma1)# generate iter samples of size n1
+y2=rnorm(n2*iter,mean=mean2,sd=sigma2)
+data1.mat=matrix(y1,nrow=n1,ncol=iter,byrow=TRUE) # Each column is a sample size n1
+data2.mat=matrix(y2,nrow=n2,ncol=iter,byrow=TRUE)
+ssq1=apply(data1.mat,2,var) # ssq1 is s squared
+ssq2=apply(data2.mat,2,var)
+spsq=((n1-1)*ssq1 + (n2-1)*ssq2)/(n1+n2-2) # pooled s squared
+w=(n1+n2-2)*spsq/(sigma1^2)#sigma1=sigma2,  Chi square stat
+hist(w,freq=FALSE, ylim=c(0,ymax), # Histogram with annotation
+main=substitute(paste("Sample size = ",n[1]+n[2]," = ",n1+n2," statistic = ",chi^2)),
+xlab=expression(paste(chi^2, "Statistic",sep=" ")), las=1)
+lines(density(w),col="Blue",lwd=3) # add a density plot
+curve(dchisq(x,n1+n2-2),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+title=expression(chi^2==frac((n[1]+n[2]-2)*S[p]^2,sigma^2)) #mathematical annotation -see ?plotmath
+legend(locator(1),c("Simulated","Theoretical"),col=c("Blue","Red"),lwd=4,lty=1:2,bty="n",title=title) # Legend #
+return(list(w=w,summary=summary(w),sd=sd(w),fun="Chi-sq")) # some output to use if needed
+}
+windows()
+chi2 = mychisim2(n1 = 10, n2 = 10, mean1 = 5, mean2= 10, sigma1 = 4, sigma2 = 4, iter=1000)
+chi2= mychisim2(n1 = 20, n2 = 10, mean1 = 3, mean2= 5, sigma1 = 10, sigma2 = 10, iter=1000)
+chi2 = mychisim2(n1 = 50, n2 = 50, mean1 = 5, mean2= 10, sigma1 = 4, sigma2 = 4, iter=10000, ymax=0.035)
+chi2 = mychisim2(n1 = 80, n2 = 50, mean1 = 3, mean2= 5, sigma1 = 10, sigma2 = 10, iter=10000, ymax = 0.035)
+```
+
+## Histogram
+
+```{r}
+windows()
+chi2 = mychisim2(iter=10000)
+hist(chi2$w)
+```
+
+# Task 5
+
+## T Statistic Notation
+
+The Student's T statistic is given as:
+$$ T = \frac{Z} {\sqrt{\chi^2/v}} = \frac{(\overline Y_1 - \overline Y_2) - (\mu_1-\mu_2)}{S_p\sqrt{\frac{1} {n_1}+ \frac{1}{n_2}}}$$
+where 
+$$ S^2_p = \frac{(n_1 - 1)S^2_1 + (n_2 - 1)S^2_2} {n_1 + n_2 - 2}$$
+and
+$$v= (n_1 + n_2 - 2)$$
+Degrees of freedom.
+
+Let's break down this function into more depth.
+$$Z = \frac{\overline Y - \mu}{\sigma/\sqrt{n}}$$
+We know that both of the sample means are normally distributed by Theorem 6.10 from the textbook, so we know that Z is a standard normal variable.  Because we are doing the T statistic for two variables, we will use a $Z_1$ and $Z_2$.
+
+Furthermore, we know that $\chi^2$ is a chi-squared random variable with $v=n-1$ degrees of freedom.  Because there are two populations, we end up with $v = n_1 + n_2 - 2$ degrees of freedom.  Then, using the values that we calculated for Z earlier, the definition for chi squared, and because $\overline Y_1, \overline Y_2$ and $S_1^2, S^2_2$ are independent, we can expand $T$ into $\frac{(\overline Y_1 - \overline Y_2) - (\mu_1-\mu_2)}{S_p\sqrt{\frac{1} {n_1}+ \frac{1}{n_2}}}$
+
+
+## 4 Plots
+Edited to place the legend when the graph is clicked on.
+
+```{r}
+myTsim2<-function(n1=10,n2=14,sigma1=3,sigma2=3,mean1=5,mean2=10,iter=1000,ymax=0.45,...){
+y1=rnorm(n1*iter,mean=mean1,sd=sigma1)# generate iter samples of size n1
+y2=rnorm(n2*iter,mean=mean2,sd=sigma2)
+data1.mat=matrix(y1,nrow=n1,ncol=iter,byrow=TRUE) # Each column is a sample size n1
+data2.mat=matrix(y2,nrow=n2,ncol=iter,byrow=TRUE)
+ssq1=apply(data1.mat,2,var) # ssq1 is s squared
+ybar1= apply(data1.mat,2,mean)
+ssq2=apply(data2.mat,2,var)
+ybar2=apply(data2.mat,2,mean)
+spsq=((n1-1)*ssq1 + (n2-1)*ssq2)/(n1+n2-2) # pooled s squared
+w=((ybar1-ybar2)-(mean1-mean2))/sqrt(spsq*(1/n1+1/n2))#sigma1=sigma2,  Chi square stat
+hist(w,freq=FALSE, ylim=c(0,ymax), # Histogram with annotation
+main=substitute(paste("Sample size = ",n[1]+n[2]," = ",n1+n2," statistic = ",T)),
+xlab=paste(" T Statistic",sep=""), las=1)
+lines(density(w),col="Blue",lwd=3) # add a density plot
+curve(dt(x,n1+n2-2),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+title=expression(T==frac((bar(Y)[1]-bar(Y)[2])-(mu[1]-mu[2]),S[p]*sqrt(frac(1,n[1])+frac(1,n[2])))) #mathematical annotation -see ?plotmath
+legend(locator(1),c("Simulated","Theoretical"),col=c("Blue","Red"),lwd=4,lty=1:2,bty="n",title=title)# Legend #
+return(list(w=w,summary=summary(w),sdw=sd(w),fun="T")) # some output to use if needed
+}
+windows()
+tsim = myTsim2(n1 = 10, n2 = 10, mean1 = 5, mean2= 10, sigma1=4, sigma2 = 4, iter=1000)
+tsim = myTsim2(n1 = 20, n2 = 10, mean1 = 3, mean2= 5, sigma1=10, sigma2 = 10, iter=1000)
+tsim = myTsim2(n1 = 50, n2 = 50, mean1 = 5, mean2= 10, sigma1=4, sigma2 = 4, iter=10000)
+tsim = myTsim2(n1 = 80, n2 = 50, mean1 = 3, mean2= 5, sigma1=10, sigma2 = 10, iter=10000)
+```
+
+
+## Histogram
+
+```{r}
+windows()
+tsmi = myTsim2(iter=10000)
+hist(tsmi$w)
+```
+
+# Task 6
+
+## F statistic
+F statistic will calculate $F = (\frac{S^2_1}{S^2_2})(\frac{\sigma^2_2}{\sigma^2_1})$.  This assumes that $\chi^2_1$ and $\chi^2_2$ are chi-square random variables with $v_1$ and $v_2$ degrees of freedom, respectively.  If the chi-squared variables are independent, then $F = \frac{\chi^2_1/v_1} {\chi^2_2/v_2}$, with $v_1$ numerator degrees of freedom and $v_2$ denominator degrees of freedom.  This can be simplified to $F = (\frac{S^2_1}{S^2_2})(\frac{\sigma^2_2}{\sigma^2_1})$.
+
+## 4 Plots
+
+```{r}
+myFsim2<-function(n1=10,n2=14,sigma1=3,sigma2=2,mean1=5,mean2=10,iter=1000,ymax=0.9,...){
+y1=rnorm(n1*iter,mean=mean1,sd=sigma1)# generate iter samples of size n1
+y2=rnorm(n2*iter,mean=mean2,sd=sigma2)
+data1.mat=matrix(y1,nrow=n1,ncol=iter,byrow=TRUE) # Each column is a sample size n1
+data2.mat=matrix(y2,nrow=n2,ncol=iter,byrow=TRUE)
+ssq1=apply(data1.mat,2,var) # ssq1 is s squared
+ssq2=apply(data2.mat,2,var)
+#spsq=((n1-1)*ssq1 + (n2-1)*ssq2)/(n1+n2-2) # pooled s squared
+w=ssq1*sigma2^2/(ssq2*sigma1^2) #
+hist(w,freq=FALSE, ylim=c(0,ymax), # Histogram with annotation
+main=substitute(paste("Sample size = ",n[1]+n[2]," = ",n1+n2," statistic = ",F)),
+xlab=paste("F Statistic",sep=""), las=1)
+lines(density(w),col="Blue",lwd=3) # add a density plot
+curve(df(x,n1-1,n2-1),xlim=c(0,6),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+title=expression(F==frac(s[1]^2,s[2]^2)*frac(sigma[2]^2,sigma[1]^2)) #mathematical annotation -see ?plotmath
+legend(locator(1),c("Simulated","Theoretical"),col=c("Blue","Red"),lwd=4,lty=1:2,bty="n",title=title)# Legend #
+return(list(w=w,summary=summary(w),sd=sd(w),fun="F")) # some output to use if needed
+}
+windows()
+fsim = myFsim2(n1 = 5, n2 = 15, sigma1 = 4, sigma2 = 4, mean1 = 6, mean2 = 8, iter=1000, ymax=.8)
+fsim = myFsim2(n1 = 15, n2 = 5, sigma1 = 3, sigma2 = 3, mean1 = 3, mean2 = 3, iter=1000, ymax=.8)
+fsim = myFsim2(n1 = 8, n2 = 12, sigma1 = 7, sigma2 = 7, mean1 = 9, mean2 = 5, iter=1000, ymax=.8)
+fsim = myFsim2(n1 = 8, n2 = 9, sigma1 = 8, sigma2 = 8, mean1 = 1, mean2 = 7, iter=1000, ymax=.8)
+```
+
+## Histogram
+```{r}
+windows()
+fsim = myFsim2()
+hist(fsim$w)
+```
+
+# Task 7
+
+## Data in the Package
+```{r}
+library(MATH4753PREU0001)
+data("fire")
+knitr::kable((head(fire)))
+```
+

@@ -1,7 +1,7 @@
 Package: MATH4753PREU0001
 Type: Package
 Title: For MATH 4753
-Version: 0.3.1
+Version: 0.3.2
 Author: Nathan Preuss
 Maintainer: Nathan Preuss ???<Nathan.B.Preuss-1@ou.edu>
 Description: Contains a variety of functions used in MATH 4753 labs.
@@ -12,3 +12,5 @@ URL: https://github.com/nbpreussOU/MATH4753PREU0001
 BugReports: https://github.com/nbpreussOU/MATH4753PREU0001/issues
 RoxygenNote: 7.1.1
 Imports: ggplot2
+Depends: 
+    R (>= 2.10)
