@@ -26,7 +26,7 @@ output:
     toc: yes
     toc_depth: 4
 bibliography: project.bib
-abstract: This project is all about applying SLR to real data using R.  In this case, SLR will be used to analyze a data set showing the realtionship between the number of deaths from a certain disease and the amount of money donated to charities committed to fighting that disease.
+abstract: This project is all about applying Simple Linear Regresssion (SLR) to real data using R.  In this case, SLR will be used to analyze a data set showing the realtionship between the number of deaths from a certain disease and the amount of money donated to charities committed to fighting that disease.  I will accomplish this by giving an introduction to the data set, validate the assumptions of SLR, analyze the model, and then use the model to make predictions for other diseases.
 ---
 
 # Introduction
@@ -413,7 +413,7 @@ Now, I am going to add the trend line to the plot.
 
 ```{r}
 with(df.final,
-plot(Donations~NumberDeaths,bg="Blue",pch=21,ylim=c(0,1.1*max(Donations)),xlim=c(0,1.1*max(NumberDeaths)))
+plot(Donations~NumberDeaths,bg="Blue",pch=21,ylim=c(0,1.1*max(Donations)),xlim=c(0,1.1*max(NumberDeaths))) + title("Figure 3: of Deaths vs Donations with a Best Fit Line")
 )
 abline(deaths.lm.removed2)
 ```
@@ -441,21 +441,36 @@ confint(deaths.lm.removed2)
 
 The confidence interval for the intercept is quite large, falling between -75,669,882 and 79,816096, which is quite a large span of numbers.  The confidence interval for $\beta_1$ is 1144 to 4643.  This means that the baseline funding for an organization falls in a wide range of possible values, including several values that aren't feasible, as it makes little sense for a charity to have negative amounts of funding.  On the other hand, the confidence interval for $\beta_1$ is much more reasonable, indicating that charities would receive between \$1144 and \$4643 per additional death.
 
-### Use of `predict()`
+### Graph With Confidence Intervals
+
+```{r}
+library(ggplot2)
+g <- ggplot(df.final, aes(x=NumberDeaths, y=Donations)) +geom_point() +geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) + ggtitle("Figure 4: Plot With Confidence Intervals")
+g
+```
+
+
+### Using the model to make Predictions
 
 Next, I am going to predict the amount of donations a charity based on a given number of deaths.
 
-### Use of `ciReg()`
+```{r}
+predict(deaths.lm.removed2, data.frame(NumberDeaths=c(15000,60000,120000)))
+```
 
-### Check on outliers using cooks plots
-
-Remember to interpret this plot and all other plots
-
-
+According to the predictions, charities fighting a disease causing 15,000 deaths would expect a little over \$45 million in donations, charities fighting a disease that causes 60,000 would expect to receive about a bit more than \$175 million in donations, and a disease causing 120,000 deaths would yield about \$350 million in donations.
 
 # Conclusion
-## Answer your research question
-## Suggest ways to improve model or experiment
+
+In conclusion, the amount of donations a charity receives is dependent upon the number of people who die from the disease the charity is fighting.  This relationship is a constant linear relationship, with each additional death generating a constant amount of donations.  On average, charities will receive about \$2,894 per additional death to a disease.  In addition, I found that charities get about \$2,073,000 for simply existing, or fighting a disease that causes 0 deaths.  
+
+# Future Research
+
+There are many things that can be done to improve this model:
+
+1. Gather more and better data.  There was a distinct lack of good data for the project, and gathering more data would help correct for the issues in the residuals vs. fixed graph.
+2. Address the sampling concerns I listed earlier in the paper.  Gathering more data, and looking at how the data changes over the years are other ways to expand this research project.
+3. Determine other factors that may determine donation rates.  There was only one factor considered in the model, and it had pretty poor predictive power.  Gathering a few more variables may help increase the predictive power of this model.
 
 
 # References

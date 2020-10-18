@@ -15,9 +15,17 @@ bindif(iter = 10000, n = 10, p = 0.7)
 \item{p}{probability (0 < p < 1)}
 }
 \value{
-a dataframe table showing the differences
+a dataframe table showing the sample distribution, the theoretical distribution, and the difference between the two
 }
 \description{
 Determine the difference between a binomial sample and dbinom
 Modified version of mybin from the lab5 help files
+}
+\examples{
+bindif()
+bindif(iter=10000, n=8, p=0.2)
+bindif(iter = 500)
+bindif(n=7)
+bindif(p=0.5)
+bindif(n=8, p=0.2)
 }

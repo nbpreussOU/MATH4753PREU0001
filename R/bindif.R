@@ -4,14 +4,21 @@
 #' @param iter number of data points in the sample
 #' @param n number of success
 #' @param p probability (0 < p < 1)
-#' @return a dataframe table showing the differences
+#' @return a dataframe table showing the sample distribution, the theoretical distribution, and the difference between the two
 #'
+#' @examples
+#' bindif()
+#' bindif(iter=10000, n=8, p=0.2)
+#' bindif(iter = 500)
+#' bindif(n=7)
+#' bindif(p=0.5)
+#' bindif(n=8, p=0.2)
 #' @export
 #'
 bindif=function(iter=10000,n=10, p=0.7){
   # make a matrix to hold the samples
   #initially filled with NA's
-  sam.mat=matrix(NA,nr=n,nc=iter, byrow=TRUE)
+  sam.mat=matrix(NA,nrow=n,ncol=iter, byrow=TRUE)
   #Make a vector to hold the number of successes in each trial
   succ=c()
   for( i in 1:iter){
@@ -29,7 +36,7 @@ bindif=function(iter=10000,n=10, p=0.7){
   z = c()
   for(j in 0:n)
   {
-    y <- c(y, dbinom(j, n, p))
+    y <- c(y, stats::dbinom(j, n, p))
     z <- c(z, j)
   }
   dif = x-y

@@ -4,15 +4,21 @@
 #'
 #' @param m1 model 1
 #' @param m2 model 2
-#' @return returns a vector with value[1] = TSS, value[2] = MSS, value[3] = RSS
+#' @return returns a list with text relating which model had a better adjusted r-squared
+#'
+#' @examples
+#' x <- c(1:20)
+#' y <- c(2:21)
+#' z <- c(1,4,6,8,1,2,6,4,1,2,3,4,6,2,3,8,6,4,3,2)
+#' fitCompare(stats::lm(y~x),stats::lm(z~x))
 #'
 #'
 #' @export
 #'
 fitCompare <- function(m1, m2)
 {
-  a = summary(m1)$r.squared
-  b = summary(m2)$r.squared
+  a = summary(m1)$adj.r.squared
+  b = summary(m2)$adj.r.squared
 
   if(a - b < 0 )
   {
@@ -24,5 +30,5 @@ fitCompare <- function(m1, m2)
   {
     result <- "same"
   }
-  return (list(x, result))
+  return (list(result))
 }

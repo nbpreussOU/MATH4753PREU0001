@@ -12,11 +12,12 @@ chebyshev(sd, vector)
 \item{vector}{vector of data}
 }
 \value{
-a ggplot object
+the percentage of data that falls within a specified number of standard deviations from the data
 }
 \description{
 More detailed description
 }
-\details{
-More detailed description
+\examples{
+chebyshev(2, c(1,2,3,4,5,6,7,8,9,11,13,16,18,21))
+chebyshev(1, c(1,2,3,11,13,16,18,21,34,41,56))
 }

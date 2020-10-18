@@ -2806,21 +2806,21 @@ div.tocify {
 
 <h1 class="title toc-ignore">Assignment 3</h1>
 <h4 class="author">Nathan Preuss</h4>
-<h4 class="date">Friday, October 09, 2020</h4>
+<h4 class="date">Saturday, October 17, 2020</h4>
 
 </div>
 
 
 <div id="questions" class="section level1">
 <h1>Questions</h1>
-<div id="i-have-solved-xxxxxx-questions." class="section level2">
-<h2>I have solved XXX/XXX Questions.</h2>
+<div id="i-have-solved-1616-questions." class="section level2">
+<h2>I have solved 16/16 Questions.</h2>
 </div>
 <div id="q-1" class="section level2">
 <h2>Q 1</h2>
 <div id="a" class="section level3">
 <h3>A</h3>
-<p>We are looking for an interarrival time of 2 minutes (120 seconds) or more, or <span class="math inline">\(P(y \ge 120)\)</span>. pexp requires that the <span class="math inline">\(rate = \frac{1} {\mean}\)</span>, so I passed <span class="math inline">\(\frac{1} {95}\)</span> instead of <span class="math inline">\(95\)</span>.</p>
+<p>We are looking for an interarrival time of 2 minutes (120 seconds) or more, or <span class="math inline">\(P(y \ge 120)\)</span>. pexp requires that the <span class="math inline">\(rate = \frac{1} {\mu}\)</span>, so I passed <span class="math inline">\(\frac{1} {95}\)</span> instead of <span class="math inline">\(95\)</span>.</p>
 <pre class="r"><code>1-pexp(120, 1/95)</code></pre>
 <pre><code>## [1] 0.2827597</code></pre>
 </div>
@@ -2875,8 +2875,8 @@ pgamma(1, 1, 1/4)</code></pre>
 <p>For formula A, the probability of causing a reaction in less than 1 minute is 9.0204%, and for formula B the probability is 22.1199%. Therefore, formula B is more likely to cause a reaction in less than 1 minute.</p>
 </div>
 </div>
-<div id="section" class="section level2">
-<h2>4</h2>
+<div id="q-4" class="section level2">
+<h2>Q 4</h2>
 <div id="a-3" class="section level3">
 <h3>A</h3>
 <p>The proportion of washers that need to be repaired can be modeled as a weibull distribution with <span class="math inline">\(P(y\le2)\)</span>. After reparameterizing the function for R, we get</p>
@@ -2925,8 +2925,8 @@ pgamma(1, 1, 1/4)</code></pre>
 <p><span class="math inline">\(P(y\le .10) = .2639\)</span></p>
 </div>
 </div>
-<div id="section-1" class="section level2">
-<h2>6</h2>
+<div id="q-6" class="section level2">
+<h2>Q 6</h2>
 <div id="a-5" class="section level3">
 <h3>A</h3>
 <p>I am going to compare the given function with <span class="math inline">\(\frac{\alpha}{\beta}y^{\alpha-1}e^{-y^\alpha\beta}\)</span> <span class="math inline">\(\alpha = 2\)</span> and <span class="math inline">\(\beta = 16\)</span>.</p>
@@ -2942,6 +2942,347 @@ pgamma(1, 1, 1/4)</code></pre>
 <pre class="r"><code>1-pweibull(6, 2, 4)</code></pre>
 <pre><code>## [1] 0.1053992</code></pre>
 <p>In this case, the probability that a chip will not fail is .1053.</p>
+</div>
+</div>
+<div id="q-7" class="section level2">
+<h2>Q 7</h2>
+<div id="a-6" class="section level3">
+<h3>A</h3>
+<p>making a table of the joint probability distribution</p>
+<pre class="r"><code>colNames = c(1,2,3,4,5,6)
+row = c(1/36, 1/36, 1/36, 1/36, 1/36, 1/36)
+distr &lt;- data.frame(row, row, row, row, row, row)
+row.names(distr) &lt;- colNames
+names(distr)[1] = &quot;1&quot;
+names(distr)[2] = &quot;2&quot;
+names(distr)[3] = &quot;3&quot;
+names(distr)[4] = &quot;4&quot;
+names(distr)[5] = &quot;5&quot;
+names(distr)[6] = &quot;6&quot;
+distr</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["4"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["5"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["6"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"1"},{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"2"},{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"3"},{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"4"},{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"5"},{"1":"0.02777778","2":"0.02777778","3":"0.02777778","4":"0.02777778","5":"0.02777778","6":"0.02777778","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="b-6" class="section level3">
+<h3>B</h3>
+<p>For X: <span class="math display">\[P(X=1) = p_1(1) = p(1,1) + p(1,2) + p(1,3) + p(1,4) + p(1,5) + p(1,6) = 1/36 + 1/36 + 1/36 + 1/36 + 1/36 + 1/36 = 1/6\]</span> <span class="math display">\[P(X=2) = 1/6\]</span> <span class="math display">\[P(X=3) = 1/6\]</span> <span class="math display">\[P(X=4) = 1/6\]</span> <span class="math display">\[P(X=5) = 1/6\]</span> <span class="math display">\[P(X=6) = 1/6\]</span></p>
+<p>Therefore, <span class="math inline">\(p_1(X) = 1/6\)</span></p>
+<p>For Y: <span class="math display">\[P(Y=1) = p_2(1) = p(1,1) + p(2,1) + p(3,1) + p(4,1) + p(5,1) + p(6,1) = 1/36 + 1/36 + 1/36 + 1/36 + 1/36 + 1/36 = 1/6\]</span> <span class="math display">\[P(Y=2) = 1/6\]</span> <span class="math display">\[P(Y=3) = 1/6\]</span> <span class="math display">\[P(Y=4) = 1/6\]</span> <span class="math display">\[P(Y=5) = 1/6\]</span> <span class="math display">\[P(Y=6) = 1/6\]</span> Therefore, <span class="math inline">\(p_2(Y) = 1/6\)</span></p>
+</div>
+<div id="c-4" class="section level3">
+<h3>C</h3>
+<p>Conditional probability for <span class="math inline">\(p_1(x|y) = \frac{p(x,y)} { p_2(y)}\)</span></p>
+<p>Let Y = 1: <span class="math display">\[p_1(1,1) = \frac{p(1, 1)} {p_2(1)} = \frac{1/36} {1/6} = 1/6\]</span> <span class="math display">\[p_1(2,1) = 1/6\]</span> <span class="math display">\[p_1(3,1) = 1/6\]</span> <span class="math display">\[p_1(4,1) = 1/6\]</span> <span class="math display">\[p_1(5,1) = 1/6\]</span> <span class="math display">\[p_1(6,1) = 1/6\]</span></p>
+<p>Conditional probability for <span class="math inline">\(p_2(y|x) = \frac{p(x,y)} { p_1(x)}\)</span></p>
+<p>Let X = 1 <span class="math display">\[p_2(1,1) = \frac{p(1, 1)} {p_1(1)} = \frac{1/36} {1/6} = 1/6\]</span> <span class="math display">\[p_2(1,2) = 1/6\]</span> <span class="math display">\[p_2(1,3) = 1/6\]</span> <span class="math display">\[p_2(1,4) = 1/6\]</span> <span class="math display">\[p_2(1,5) = 1/6\]</span> <span class="math display">\[p_2(1,6) = 1/6\]</span></p>
+<p>In any case, the conditional probability table looks exactly the joint probability distribution table from part A.</p>
+</div>
+<div id="d-1" class="section level3">
+<h3>D</h3>
+<p>Both the conditional probability and the marginal probability are the same. In this case, the variables are independent, because the occurance of one event does not impact the probability of another event.</p>
+</div>
+</div>
+<div id="q-8" class="section level2">
+<h2>Q 8</h2>
+<div id="bivariate-probability-distribution" class="section level3">
+<h3>Bivariate Probability Distribution</h3>
+<pre class="r"><code>Energy1&lt;- c(1/7,0/7,0/7)
+Energy2&lt;- c(2/7,0/7,0/7)
+Energy3&lt;- c(1/7, 2/7, 1/7)
+names1 &lt;- c(&quot;Time 1&quot;, &quot;Time 2&quot;, &quot;Time 3&quot;)
+df &lt;- data.frame(Energy1,Energy2,Energy3)
+row.names(df) &lt;- names1
+df</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Energy1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Energy2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Energy3"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.1428571","2":"0.2857143","3":"0.1428571","_rn_":"Time 1"},{"1":"0.0000000","2":"0.0000000","3":"0.2857143","_rn_":"Time 2"},{"1":"0.0000000","2":"0.0000000","3":"0.1428571","_rn_":"Time 3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="p_1x" class="section level3">
+<h3><span class="math inline">\(P_1(X)\)</span></h3>
+<p>Adding P1 as a summary row on to the table</p>
+<pre class="r"><code>P1 &lt;- c(sum(Energy1), sum(Energy2), sum(Energy3))
+df&lt;- rbind(df, P1)
+names1 &lt;- c(&quot;Time 1&quot;, &quot;Time 2&quot;, &quot;Time 3&quot;, &quot;P1&quot;)
+row.names(df) &lt;- names1
+df</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Energy1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Energy2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Energy3"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.1428571","2":"0.2857143","3":"0.1428571","_rn_":"Time 1"},{"1":"0.0000000","2":"0.0000000","3":"0.2857143","_rn_":"Time 2"},{"1":"0.0000000","2":"0.0000000","3":"0.1428571","_rn_":"Time 3"},{"1":"0.1428571","2":"0.2857143","3":"0.5714286","_rn_":"P1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="p_2y" class="section level3">
+<h3><span class="math inline">\(P_2(Y)\)</span></h3>
+<p>Doing the same as above, except P2 is being added as a column.</p>
+<pre class="r"><code>Pa2 &lt;- Energy1 + Energy2 + Energy3
+P2&lt;- c(Pa2, 0)
+df &lt;- cbind(df, P2)
+df</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Energy1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Energy2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Energy3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["P2"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.1428571","2":"0.2857143","3":"0.1428571","4":"0.5714286","_rn_":"Time 1"},{"1":"0.0000000","2":"0.0000000","3":"0.2857143","4":"0.2857143","_rn_":"Time 2"},{"1":"0.0000000","2":"0.0000000","3":"0.1428571","4":"0.1428571","_rn_":"Time 3"},{"1":"0.1428571","2":"0.2857143","3":"0.5714286","4":"0.0000000","_rn_":"P1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="p_2yx" class="section level3">
+<h3><span class="math inline">\(P_2(y|x)\)</span></h3>
+<p>Creating a new dataframe to show the conditional distribution</p>
+<pre class="r"><code>EnergyLvl1&lt;- Energy1/sum(Energy1)
+EnergyLvl2&lt;- Energy2/sum(Energy2)
+EnergyLvl3&lt;- Energy3/sum(Energy3)
+names2 &lt;- c(1:3)
+df2 &lt;- data.frame(EnergyLvl1, EnergyLvl2, EnergyLvl3)
+row.names(df2) &lt;- names2
+names(df2)[1] = &quot;P2(y|1)&quot;
+names(df2)[2] = &quot;P2(y|2)&quot;
+names(df2)[3] = &quot;P2(y|3)&quot;
+
+df2</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["P2(y|1)"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["P2(y|2)"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["P2(y|3)"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1","3":"0.25","_rn_":"1"},{"1":"0","2":"0","3":"0.50","_rn_":"2"},{"1":"0","2":"0","3":"0.25","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="q-9" class="section level2">
+<h2>Q 9</h2>
+<div id="a-7" class="section level3">
+<h3>A</h3>
+<p><span class="math display">\[f_2(y)= \int_y^{2y}f(x,y)dx \]</span> <span class="math display">\[= \int_y^{2y}\frac{e^{-y/10}}{10y}dx\]</span> <span class="math display">\[ = \frac{e^{-y/10}}{10y}x\Big|_y^{2y}\]</span> <span class="math display">\[ = \frac{e^{-y/10}}{10y}2y - \frac{e^{-y/10}}{10y}y\]</span> <span class="math display">\[ = \frac{e^{-y/10}}{10}\]</span> This looks remarkably similar to an exponential continuous random variable.</p>
+</div>
+<div id="b-7" class="section level3">
+<h3>B</h3>
+<p>Because this is similar to a continuous random variable, and because the expected value, or the mean, of a continuous random variable is <span class="math inline">\(\beta\)</span>, then the expected value of this function is 10, since in this case, <span class="math inline">\(\beta = 10\)</span>.</p>
+</div>
+</div>
+<div id="q-10" class="section level2">
+<h2>Q 10</h2>
+<div id="a-solving-for-c" class="section level3">
+<h3>A: Solving for C</h3>
+<p><span class="math display">\[\int_{-\infty}^\infty\int_{-\infty}^\infty f(x,y)dydx = 1 \]</span> <span class="math display">\[\int_0^\infty\int_{0}^x ce^{-x^2}dydx = 1 \]</span> <span class="math display">\[\int_0^\infty ce^{-x^2}y \Big|^x_0dx = 1 \]</span> <span class="math display">\[\int_0^\infty cxe^{-x^2} - 0dx = 1 \]</span> <span class="math display">\[\frac{cxe^{-x^2}}{-2x} \Big|^\infty_0 = 1 \]</span> As X approaches infinity, <span class="math inline">\(e^{-x^2}\)</span> approaches 0. <span class="math display">\[0 - \frac{ce^{-0^2}}{-2}  = 1 \]</span> <span class="math display">\[c/2 = 1 \]</span> <span class="math display">\[c = 2\]</span></p>
+</div>
+<div id="b-8" class="section level3">
+<h3>B</h3>
+<p>We are trying to prove that <span class="math display">\[\int^\infty_{-\infty}f_1(x)dx = 1\]</span></p>
+<p><span class="math display">\[f_1(x) = \int^\infty_{-\infty}f_1(x,y)dy = 1\]</span> <span class="math display">\[2\int^x_{0}e^{-x^2}dy = 1\]</span> <span class="math display">\[2ye^{-x^2}\Big|^x_0 = 1\]</span> <span class="math display">\[2xe^{-x^2} - 0= 1\]</span> <span class="math display">\[f_1(x) = 2xe^{-x^2}\]</span></p>
+<p>Thus</p>
+<p><span class="math display">\[\int^\infty_{-\infty}f_1(x)dx = 2\int_0^\infty xe^{-x^2}dx\]</span> <span class="math display">\[\frac{2xe^{-x^2}}{-2x} \Big|^\infty_0\]</span> As X approaches infinity, <span class="math inline">\(e^{-x^2}\)</span> approaches 0. <span class="math display">\[0 - \frac{2e^{-0^2}}{-2}  = 1 \]</span> <span class="math display">\[\frac{-2}{-2} = 1\]</span></p>
+<p>Thus it has been proven.</p>
+</div>
+<div id="c-5" class="section level3">
+<h3>C</h3>
+<p>Using <span class="math inline">\(f_1(x) = 1\)</span>, we are going to solve the conditional density for Y given X.</p>
+<p>First, we are going to derive the conditional density formula. <span class="math display">\[f_2(y|x) = \frac{f(x,y)}{f_1(x)} = \frac{2e^{-x^2}}{1} = 2e^{-x^2}\]</span> As shown above, <span class="math display">\[2\int_0^\infty xe^{-x^2}dx = 1\]</span> Thus, the conditional density function is a uniform distribution over <span class="math inline">\(0 \le Y \le X\)</span> with density <span class="math inline">\(1/X\)</span>.</p>
+</div>
+</div>
+<div id="q-11" class="section level2">
+<h2>Q 11</h2>
+<p><span class="math inline">\(COV(X,Y) = E(XY) - E(X)E(Y)\)</span>. With <span class="math inline">\(E(XY) = 0\)</span>, <span class="math inline">\(E(X) = 0\)</span>, and <span class="math inline">\(E(Y) = 0\)</span>, <span class="math inline">\(COV(X,Y) = 0\)</span>. However, because the probability of <span class="math inline">\(f(0,0) = 0\)</span>, then if <span class="math inline">\(X= 1\)</span>, Y can only take on the values of 1 or -1. Therefore, Y is not free to take on any value and is dependent upon X.</p>
+</div>
+<div id="q-12" class="section level2">
+<h2>Q 12</h2>
+<div id="a-8" class="section level3">
+<h3>A</h3>
+<p>Since this takes on a uniform distribution, the expected value of a uniform distribution is <span class="math inline">\(\frac{a+b}2\)</span>, so in this case, <span class="math inline">\(\frac{1+3} 2 = 2 = E(\overline Y)\)</span>.</p>
+</div>
+<div id="b-9" class="section level3">
+<h3>B</h3>
+<p>The variance of a uniform distribution is <span class="math inline">\(\frac{(b-a)^2}{12n} = 0.0055\)</span></p>
+</div>
+<div id="c-6" class="section level3">
+<h3>C</h3>
+<p>Using CLT for a uniform distribution with a 1000 iterations and a sample size of 60.</p>
+<pre class="r"><code>################### uniform ##########################
+### CLT uniform 
+## my Central Limit Function
+## Notice that I have assigned default values which can be changed when the function is called
+mycltu=function(n,iter,a=0,b=10){
+## r-random sample from the uniform
+y=runif(n*iter,a,b)
+## Place these numbers into a matrix
+## The columns will correspond to the iteration and the rows will equal the sample size n
+data=matrix(y,nr=n,nc=iter,byrow=TRUE)
+## apply the function mean to the columns (2) of the matrix
+## these are placed in a vector w
+w=apply(data,2,mean)
+## We will make a histogram of the values in w
+## How high should we make y axis?
+## All the values used to make a histogram are placed in param (nothing is plotted yet)
+param=hist(w,plot=FALSE)
+## Since the histogram will be a density plot we will find the max density
+
+ymax=max(param$density)
+## To be on the safe side we will add 10% more to this
+ymax=1.1*ymax
+## Now we can make the histogram
+hist(w,freq=FALSE,  ylim=c(0,ymax), main=paste(&quot;Histogram of sample mean&quot;,
+&quot;\n&quot;, &quot;sample size= &quot;,n,sep=&quot;&quot;),xlab=&quot;Sample mean&quot;)
+## add a density curve made from the sample distribution
+lines(density(w),col=&quot;Blue&quot;,lwd=3) # add a density plot
+## Add a theoretical normal curve 
+curve(dnorm(x,mean=(a+b)/2,sd=(b-a)/(sqrt(12*n))),add=TRUE,col=&quot;Red&quot;,lty=2,lwd=3) # add a theoretical curve
+## Add the density from which the samples were taken
+curve(dunif(x,a,b),add=TRUE,lwd=4)
+
+}
+mycltu(n=60,iter=1000, a=1, b=3)</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+<p>It looks like a normal distribution.</p>
+</div>
+<div id="d-2" class="section level3">
+<h3>D</h3>
+<p>Using pnorm with the mean and variance calculated above.</p>
+<pre class="r"><code>pnorm(2.5, 2, 0.0055) - pnorm(1.5, 2, .0055)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<p>The probability of <span class="math inline">\(1.5 \le \overline Y \le 2.5 = 1\)</span></p>
+</div>
+<div id="e" class="section level3">
+<h3>E</h3>
+<p>Using pnorm to solve <span class="math inline">\(\overline Y \gt 2.2\)</span></p>
+<pre class="r"><code>1-pnorm(2.2, 2, 0.00556)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>R is giving me 0, but from the looks of the histogram above, there exists a very tiny chance that <span class="math inline">\(\overline Y \gt 2.2\)</span>. I believe the .9963 in the answer key comes from the probability of <span class="math inline">\(\overline Y \lt 2.2\)</span>.</p>
+</div>
+</div>
+<div id="q-13" class="section level2">
+<h2>Q 13</h2>
+<div id="a-9" class="section level3">
+<h3>A</h3>
+<p>I will be using continuity correction for the normal approximation to a binomial probability.</p>
+<p><span class="math display">\[P(Y \le 1) \approx P(Z &lt; \frac{(1+.5 - 20*.40)}{\sqrt{20*.40*.60}})) = P(Z &lt; -2.9668)\]</span></p>
+<p>Using pnorm to estimate the probability of the normal distribution</p>
+<pre class="r"><code>pnorm(-2.9668)</code></pre>
+<pre><code>## [1] 0.001504583</code></pre>
+<p>The probability is .0015.</p>
+</div>
+<div id="b-10" class="section level3">
+<h3>B</h3>
+<p>Using the same theorem as above, but this time calculating the chances that more than 10 swordfish are contaminated. <span class="math inline">\(P(Y\ge 11) \approx P(Z&gt;.1.1410)\)</span></p>
+<pre class="r"><code>1 - pnorm(1.1410)</code></pre>
+<pre><code>## [1] 0.126935</code></pre>
+<p>The probability is .1269.</p>
+</div>
+<div id="c-7" class="section level3">
+<h3>C</h3>
+<p>I will use pbinom to compare determine the actual values and compare them to the calculated normal values.</p>
+<pre class="r"><code>pbinom(1, 20, .4)</code></pre>
+<pre><code>## [1] 0.0005240494</code></pre>
+<pre class="r"><code>1-pbinom(10, 20, .4)</code></pre>
+<pre><code>## [1] 0.1275212</code></pre>
+<p>The normal approximation values are close to the binomial values. The binomial value for part A was .0005, while the normal value was .0015, and the binomial value for part B was .1275 and the normal value was .1269. As a result, the normal distribution provides a good approximation to the binomial distribution.</p>
+</div>
+</div>
+<div id="q-14" class="section level2">
+<h2>Q 14</h2>
+<div id="a-10" class="section level3">
+<h3>A</h3>
+<p>I will be constructing a 99% confidence interval for the mean lead level in water using R code provided for this assignment.</p>
+<pre class="r"><code># Q 14 
+
+library(readxl)
+dird = &quot;C:\\Users\\Nathan\\Downloads\\Data-for-the-course\\K25936_Downloads\\Excel\\&quot;
+
+myread = function(xls){
+  require(readxl)
+read_xls(paste0(dird, xls))
+}
+
+leadcop = myread(&quot;LEADCOPP.xls&quot;)
+solrad = myread(&quot;SOLARAD.xls&quot;)
+diazinon = myread(&quot;DIAZINON.xls&quot;)
+
+t.test(leadcop$LEAD,conf.level = 0.99)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  leadcop$LEAD
+## t = 2.325, df = 9, p-value = 0.04512
+## alternative hypothesis: true mean is not equal to 0
+## 99 percent confidence interval:
+##  -1.147845  6.919045
+## sample estimates:
+## mean of x 
+##    2.8856</code></pre>
+<p>The 99% confidence interval is (-1.1478, 6.9190).</p>
+</div>
+<div id="b-11" class="section level3">
+<h3>B</h3>
+<p>The 99% confidence interval, except this time for mean copper level.</p>
+<pre class="r"><code>t.test(leadcop$COPPER,conf.level = 0.99)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  leadcop$COPPER
+## t = 5.1746, df = 9, p-value = 0.0005836
+## alternative hypothesis: true mean is not equal to 0
+## 99 percent confidence interval:
+##  0.1518726 0.6647274
+## sample estimates:
+## mean of x 
+##    0.4083</code></pre>
+<p>The 99% confidence interval is (.1518, .6647).</p>
+</div>
+<div id="c-8" class="section level3">
+<h3>C</h3>
+<p>In the context of the problem, we would expect to see 99% of measured values for the mean lead level to fall between -1.1478 and 6.9190 micrograms per Liter. Similarly, we would expect to see 99% of measured values for the copper mean to fall between .1518 and .6647 micrograms per Liter.</p>
+</div>
+<div id="d-3" class="section level3">
+<h3>D</h3>
+<p>The phrase 99% confidence means that, if we were to employ our interval estimator on multiple occasions, we would expect to see 99% of the intervals constructed contain the true parameter value.</p>
+</div>
+</div>
+<div id="q-15" class="section level2">
+<h2>Q 15</h2>
+<div id="a-11" class="section level3">
+<h3>A</h3>
+<p>Using provided R code, I will find a 95% confidence interval for the mean difference between the two sites, using the small sample formula for matched pairs because the number of records is small.</p>
+<pre class="r"><code>with(solrad, t.test(STJOS, IOWA, paired=TRUE, conf.level = 0.95))</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  STJOS and IOWA
+## t = 11.765, df = 6, p-value = 2.277e-05
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  156.8193 239.1807
+## sample estimates:
+## mean of the differences 
+##                     198</code></pre>
+<p>The 95% confidence interval is (156.8193, 239.1807).</p>
+</div>
+</div>
+<div id="q-16" class="section level2">
+<h2>Q 16</h2>
+<div id="a-12" class="section level3">
+<h3>A</h3>
+<p>Using provided R code, I will construct a 90% confidence interval for the mean difference between the two categories, using the small sample formula for matched pairs because, again, the sample size is small.</p>
+<pre class="r"><code>with( diazinon, t.test(DAY, NIGHT, paired =TRUE, conf.level = .90))</code></pre>
+<pre><code>## 
+##  Paired t-test
+## 
+## data:  DAY and NIGHT
+## t = -3.5278, df = 10, p-value = 0.005467
+## alternative hypothesis: true difference in means is not equal to 0
+## 90 percent confidence interval:
+##  -58.89917 -18.91901
+## sample estimates:
+## mean of the differences 
+##               -38.90909</code></pre>
+<p>The 90% confidence interval is (-58.8992, -18.9190).</p>
+</div>
+<div id="b-12" class="section level3">
+<h3>B</h3>
+<p>We are assuming that the population of paired differences is normally distributed.</p>
+</div>
+<div id="c-9" class="section level3">
+<h3>C</h3>
+<p>The mean diazinon levels do differ between day and night. The 90% confidence interval tells us that the mean difference between the amount of diazinon between day and night is going to fall between -58.8992 and -18.9190. Thus, the amount of diazinon in the day is, on average, less than the amount of diazinon at night.</p>
 </div>
 </div>
 </div>

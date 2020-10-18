@@ -16,8 +16,13 @@ nathancltp(n, iter, lambda = 10, ...)
 \item{...}{additional arguments}
 }
 \value{
-three graphs, a histogram of the sample mean, a theoretical normal curve, and a probability function bar plot, all with rainbow colors
+This function returns three graphs: a histogram of the sample mean, a theoretical normal curve, and a probability function bar plot, all with rainbow colors
 }
 \description{
 Create various plots for CLT of a poisson distribution.
+}
+\examples{
+nathancltp(50, 1000, 6)
+nathancltp(10, 6000)
+nathancltp(20, 100, 2)
 }

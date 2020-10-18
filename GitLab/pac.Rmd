@@ -1,0 +1,83 @@
+---
+title: "R package"
+author: "Nathan Preuss"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+
+
+Congratulations for getting this far. To complete the evidence that you have made a working R package please answer the following by using the supplied rmd  and upload the knitted html to CANVAS.
+
+I will assume your package is called **MATH4753PREU0001** and you have packaged and documented functions `chebyshev`, `nathancltp`, `bindif` and `fitCompare`.
+
+Your actual package name and functions will obviously be called something else.
+
+# First function
+
+Please place your first function in the r chunk in the following way:
+
+Once you are ready please remove the option `eval = FALSE`
+
+```{r first}
+MATH4753PREU0001::chebyshev(2, c(1,2,3,4,5,6,7,8,9,11,13,16,18,21))
+MATH4753PREU0001::chebyshev(1, c(1,2,3,11,13,16,18,21,34,41,56))
+
+```
+
+
+# Second function
+
+Please place your second function in the r chunk in the following way:
+
+Once you are ready please remove the option `eval = FALSE`
+
+```{r second}
+MATH4753PREU0001::nathancltp(50, 1000, 6)
+MATH4753PREU0001::nathancltp(10, 6000)
+MATH4753PREU0001::nathancltp(20, 100, 2)
+
+```
+
+
+# Third function
+
+Please place your third function in the r chunk in the following way:
+
+Once you are ready please remove the option `eval = FALSE`
+
+```{r third}
+MATH4753PREU0001::bindif()
+MATH4753PREU0001::bindif(iter=10000, n=8, p=0.2)
+MATH4753PREU0001::bindif(iter = 500)
+MATH4753PREU0001::bindif(n=7)
+MATH4753PREU0001::bindif(p=0.5)
+MATH4753PREU0001::bindif(n=8, p=0.2)
+
+```
+
+
+# Forth function
+
+Please place your forth function in the r chunk in the following way:
+
+Once you are ready please remove the option `eval = FALSE`
+
+```{r forth}
+x <- c(1:20)
+y <- c(2:21)
+z <- c(1,4,6,8,1,2,6,4,1,2,3,4,6,2,3,8,6,4,3,2)
+MATH4753PREU0001::fitCompare(stats::lm(y~x),stats::lm(z~x))
+MATH4753PREU0001::fitCompare(stats::lm(z~x),stats::lm(z~y))
+```
+
+Yes, there is a warning, but that's just because I gave it a model with perfect fit on purpose.

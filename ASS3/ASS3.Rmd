@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Questions{}
 
-## I have solved XXX/XXX Questions.
+## I have solved 16/16 Questions.
 
 ## Q 1
 
@@ -175,3 +175,378 @@ The probability that a chip will not fail before 6 years can be represented in R
 
 In this case, the probability that a chip will not fail is .1053.
 
+## Q 7
+
+### A
+
+making a table of the joint probability distribution
+
+```{r}
+colNames = c(1,2,3,4,5,6)
+row = c(1/36, 1/36, 1/36, 1/36, 1/36, 1/36)
+distr <- data.frame(row, row, row, row, row, row)
+row.names(distr) <- colNames
+names(distr)[1] = "1"
+names(distr)[2] = "2"
+names(distr)[3] = "3"
+names(distr)[4] = "4"
+names(distr)[5] = "5"
+names(distr)[6] = "6"
+distr
+```
+
+### B
+
+For X:
+$$P(X=1) = p_1(1) = p(1,1) + p(1,2) + p(1,3) + p(1,4) + p(1,5) + p(1,6) = 1/36 + 1/36 + 1/36 + 1/36 + 1/36 + 1/36 = 1/6$$
+$$P(X=2) = 1/6$$
+$$P(X=3) = 1/6$$
+$$P(X=4) = 1/6$$
+$$P(X=5) = 1/6$$
+$$P(X=6) = 1/6$$
+
+Therefore, $p_1(X) = 1/6$
+
+
+For Y:
+$$P(Y=1) = p_2(1) = p(1,1) + p(2,1) + p(3,1) + p(4,1) + p(5,1) + p(6,1) = 1/36 + 1/36 + 1/36 + 1/36 + 1/36 + 1/36 = 1/6$$
+$$P(Y=2) = 1/6$$
+$$P(Y=3) = 1/6$$
+$$P(Y=4) = 1/6$$
+$$P(Y=5) = 1/6$$
+$$P(Y=6) = 1/6$$
+Therefore, $p_2(Y) = 1/6$
+
+### C
+
+Conditional probability for $p_1(x|y) = \frac{p(x,y)} { p_2(y)}$
+
+Let Y = 1:
+$$p_1(1,1) = \frac{p(1, 1)} {p_2(1)} = \frac{1/36} {1/6} = 1/6$$
+$$p_1(2,1) = 1/6$$
+$$p_1(3,1) = 1/6$$
+$$p_1(4,1) = 1/6$$
+$$p_1(5,1) = 1/6$$
+$$p_1(6,1) = 1/6$$
+
+Conditional probability for $p_2(y|x) = \frac{p(x,y)} { p_1(x)}$
+
+Let X = 1
+$$p_2(1,1) = \frac{p(1, 1)} {p_1(1)} = \frac{1/36} {1/6} = 1/6$$
+$$p_2(1,2) = 1/6$$
+$$p_2(1,3) = 1/6$$
+$$p_2(1,4) = 1/6$$
+$$p_2(1,5) = 1/6$$
+$$p_2(1,6) = 1/6$$
+
+In any case, the conditional probability table looks exactly the joint probability distribution table from part A.
+
+### D
+
+Both the conditional probability and the marginal probability are the same.  In this case, the variables are independent, because the occurance of one event does not impact the probability of another event.
+
+## Q 8
+
+### Bivariate Probability Distribution
+
+```{r}
+Energy1<- c(1/7,0/7,0/7)
+Energy2<- c(2/7,0/7,0/7)
+Energy3<- c(1/7, 2/7, 1/7)
+names1 <- c("Time 1", "Time 2", "Time 3")
+df <- data.frame(Energy1,Energy2,Energy3)
+row.names(df) <- names1
+df
+```
+
+### $P_1(X)$
+
+Adding P1 as a summary row on to the table
+
+```{r}
+P1 <- c(sum(Energy1), sum(Energy2), sum(Energy3))
+df<- rbind(df, P1)
+names1 <- c("Time 1", "Time 2", "Time 3", "P1")
+row.names(df) <- names1
+df
+```
+
+### $P_2(Y)$
+
+Doing the same as above, except P2 is being added as a column.
+
+```{r}
+Pa2 <- Energy1 + Energy2 + Energy3
+P2<- c(Pa2, 0)
+df <- cbind(df, P2)
+df
+```
+
+### $P_2(y|x)$
+
+Creating a new dataframe to show the conditional distribution
+
+```{r}
+EnergyLvl1<- Energy1/sum(Energy1)
+EnergyLvl2<- Energy2/sum(Energy2)
+EnergyLvl3<- Energy3/sum(Energy3)
+names2 <- c(1:3)
+df2 <- data.frame(EnergyLvl1, EnergyLvl2, EnergyLvl3)
+row.names(df2) <- names2
+names(df2)[1] = "P2(y|1)"
+names(df2)[2] = "P2(y|2)"
+names(df2)[3] = "P2(y|3)"
+
+df2
+```
+
+## Q 9
+
+### A
+
+$$f_2(y)= \int_y^{2y}f(x,y)dx $$
+$$= \int_y^{2y}\frac{e^{-y/10}}{10y}dx$$
+$$ = \frac{e^{-y/10}}{10y}x\Big|_y^{2y}$$
+$$ = \frac{e^{-y/10}}{10y}2y - \frac{e^{-y/10}}{10y}y$$
+$$ = \frac{e^{-y/10}}{10}$$
+This looks remarkably similar to an exponential continuous random variable.
+
+### B
+
+Because this is similar to a continuous random variable, and because the expected value, or the mean, of a continuous random variable is $\beta$, then the expected value of this function is 10, since in this case, $\beta = 10$.
+
+## Q 10
+
+### A: Solving for C
+
+$$\int_{-\infty}^\infty\int_{-\infty}^\infty f(x,y)dydx = 1 $$
+$$\int_0^\infty\int_{0}^x ce^{-x^2}dydx = 1 $$
+$$\int_0^\infty ce^{-x^2}y \Big|^x_0dx = 1 $$
+$$\int_0^\infty cxe^{-x^2} - 0dx = 1 $$
+$$\frac{cxe^{-x^2}}{-2x} \Big|^\infty_0 = 1 $$
+As X approaches infinity, $e^{-x^2}$ approaches 0.
+$$0 - \frac{ce^{-0^2}}{-2}  = 1 $$
+$$c/2 = 1 $$
+$$c = 2$$
+
+### B
+
+We are trying to prove that $$\int^\infty_{-\infty}f_1(x)dx = 1$$
+
+$$f_1(x) = \int^\infty_{-\infty}f_1(x,y)dy = 1$$
+$$2\int^x_{0}e^{-x^2}dy = 1$$
+$$2ye^{-x^2}\Big|^x_0 = 1$$
+$$2xe^{-x^2} - 0= 1$$
+$$f_1(x) = 2xe^{-x^2}$$
+
+Thus
+
+$$\int^\infty_{-\infty}f_1(x)dx = 2\int_0^\infty xe^{-x^2}dx$$
+$$\frac{2xe^{-x^2}}{-2x} \Big|^\infty_0$$
+As X approaches infinity, $e^{-x^2}$ approaches 0.
+$$0 - \frac{2e^{-0^2}}{-2}  = 1 $$
+$$\frac{-2}{-2} = 1$$
+
+Thus it has been proven.
+
+### C
+
+Using $f_1(x) = 1$, we are going to solve the conditional density for Y given X.
+
+First, we are going to derive the conditional density formula.
+$$f_2(y|x) = \frac{f(x,y)}{f_1(x)} = \frac{2e^{-x^2}}{1} = 2e^{-x^2}$$
+As shown above,
+$$2\int_0^\infty xe^{-x^2}dx = 1$$
+Thus, the conditional density function is a uniform distribution over $0 \le Y \le X$ with density $1/X$.
+
+## Q 11
+
+$COV(X,Y) = E(XY) - E(X)E(Y)$.  With $E(XY) = 0$, $E(X) = 0$, and $E(Y) = 0$, $COV(X,Y) = 0$.  However, because the probability of $f(0,0) = 0$, then if $X= 1$, Y can only take on the values of 1 or -1.  Therefore, Y is not free to take on any value and is dependent upon X.
+
+## Q 12
+
+### A
+
+Since this takes on a uniform distribution, the expected value of a uniform distribution is $\frac{a+b}2$, so in this case, $\frac{1+3} 2 = 2 = E(\overline Y)$.
+
+### B
+
+The variance of a uniform distribution is $\frac{(b-a)^2}{12n} = 0.0055$
+
+### C
+
+Using CLT for a uniform distribution with a 1000 iterations and a sample size of 60.
+
+```{r}
+################### uniform ##########################
+### CLT uniform 
+## my Central Limit Function
+## Notice that I have assigned default values which can be changed when the function is called
+mycltu=function(n,iter,a=0,b=10){
+## r-random sample from the uniform
+y=runif(n*iter,a,b)
+## Place these numbers into a matrix
+## The columns will correspond to the iteration and the rows will equal the sample size n
+data=matrix(y,nr=n,nc=iter,byrow=TRUE)
+## apply the function mean to the columns (2) of the matrix
+## these are placed in a vector w
+w=apply(data,2,mean)
+## We will make a histogram of the values in w
+## How high should we make y axis?
+## All the values used to make a histogram are placed in param (nothing is plotted yet)
+param=hist(w,plot=FALSE)
+## Since the histogram will be a density plot we will find the max density
+
+ymax=max(param$density)
+## To be on the safe side we will add 10% more to this
+ymax=1.1*ymax
+## Now we can make the histogram
+hist(w,freq=FALSE,  ylim=c(0,ymax), main=paste("Histogram of sample mean",
+"\n", "sample size= ",n,sep=""),xlab="Sample mean")
+## add a density curve made from the sample distribution
+lines(density(w),col="Blue",lwd=3) # add a density plot
+## Add a theoretical normal curve 
+curve(dnorm(x,mean=(a+b)/2,sd=(b-a)/(sqrt(12*n))),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+## Add the density from which the samples were taken
+curve(dunif(x,a,b),add=TRUE,lwd=4)
+
+}
+mycltu(n=60,iter=1000, a=1, b=3)
+```
+
+It looks like a normal distribution.
+
+### D
+
+Using pnorm with the mean and variance calculated above.
+
+```{r}
+pnorm(2.5, 2, 0.0055) - pnorm(1.5, 2, .0055)
+```
+
+The probability of $1.5 \le \overline Y \le 2.5 = 1$
+
+### E
+
+Using pnorm to solve $\overline Y \gt 2.2$
+
+```{r}
+1-pnorm(2.2, 2, 0.00556)
+```
+
+R is giving me 0, but from the looks of the histogram above, there exists a very tiny chance that $\overline Y \gt 2.2$.  I believe the .9963 in the answer key comes from the probability of $\overline Y \lt 2.2$.
+
+
+## Q 13
+
+### A
+
+I will be using continuity correction for the normal approximation to a binomial probability.
+
+$$P(Y \le 1) \approx P(Z < \frac{(1+.5 - 20*.40)}{\sqrt{20*.40*.60}})) = P(Z < -2.9668)$$
+
+Using pnorm to estimate the probability of the normal distribution
+
+```{r}
+pnorm(-2.9668)
+```
+
+The probability is .0015.
+
+### B
+
+Using the same theorem as above, but this time calculating the chances that more than 10 swordfish are contaminated.  $P(Y\ge 11) \approx P(Z>.1.1410)$
+
+```{r}
+1 - pnorm(1.1410)
+```
+
+The probability is .1269.
+
+### C
+
+I will use pbinom to compare determine the actual values and compare them to the calculated normal values.
+
+```{r}
+pbinom(1, 20, .4)
+1-pbinom(10, 20, .4)
+```
+
+The normal approximation values are close to the binomial values.  The binomial value for part A was .0005, while the normal value was .0015, and the binomial value for part B was .1275 and the normal value was .1269.  As a result, the normal distribution provides a good approximation to the binomial distribution.
+
+## Q 14
+
+### A
+
+I will be constructing a 99% confidence interval for the mean lead level in water using R code provided for this assignment.
+
+```{r}
+# Q 14 
+
+library(readxl)
+dird = "C:\\Users\\Nathan\\Downloads\\Data-for-the-course\\K25936_Downloads\\Excel\\"
+
+myread = function(xls){
+  require(readxl)
+read_xls(paste0(dird, xls))
+}
+
+leadcop = myread("LEADCOPP.xls")
+solrad = myread("SOLARAD.xls")
+diazinon = myread("DIAZINON.xls")
+
+t.test(leadcop$LEAD,conf.level = 0.99)
+
+```
+
+The 99% confidence interval is (-1.1478, 6.9190).
+
+### B
+
+The 99% confidence interval, except this time for mean copper level.
+
+```{r}
+t.test(leadcop$COPPER,conf.level = 0.99)
+```
+
+The 99% confidence interval is (.1518, .6647).
+
+### C
+
+In the context of the problem, we would expect to see 99% of measured values for the mean lead level to fall between -1.1478 and 6.9190 micrograms per Liter.  Similarly, we would expect to see 99% of measured values for the copper mean to fall between .1518 and .6647 micrograms per Liter.
+
+### D
+
+The phrase 99% confidence means that, if we were to employ our interval estimator on multiple occasions, we would expect to see 99% of the intervals constructed contain the true parameter value.
+
+## Q 15
+
+### A
+
+Using provided R code, I will find a 95% confidence interval for the mean difference between the two sites, using the small sample formula for matched pairs because the number of records is small.
+
+```{r}
+with(solrad, t.test(STJOS, IOWA, paired=TRUE, conf.level = 0.95))
+```
+
+The 95% confidence interval is (156.8193, 239.1807).
+
+## Q 16
+
+### A
+
+Using provided R code, I will construct a 90% confidence interval for the mean difference between the two categories, using the small sample formula for matched pairs because, again, the sample size is small.
+
+```{r}
+with( diazinon, t.test(DAY, NIGHT, paired =TRUE, conf.level = .90))
+```
+
+The 90% confidence interval is (-58.8992, -18.9190).
+
+### B
+
+We are assuming that the population of paired differences is normally distributed. 
+
+### C
+
+The mean diazinon levels do differ between day and night.  The 90% confidence interval tells us that the mean difference between the amount of diazinon between day and night is going to fall between -58.8992 and -18.9190.  Thus, the amount of diazinon in the day is, on average, less than the amount of diazinon at night.

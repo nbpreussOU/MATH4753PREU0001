@@ -12,8 +12,16 @@ fitCompare(m1, m2)
 \item{m2}{model 2}
 }
 \value{
-returns a vector with value[1] = TSS, value[2] = MSS, value[3] = RSS
+returns a list with text relating which model had a better adjusted r-squared
 }
 \description{
 More detailed description
+}
+\examples{
+x <- c(1:20)
+y <- c(2:21)
+z <- c(1,4,6,8,1,2,6,4,1,2,3,4,6,2,3,8,6,4,3,2)
+fitCompare(stats::lm(y~x),stats::lm(z~x))
+
+
 }
