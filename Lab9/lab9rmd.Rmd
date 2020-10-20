@@ -1,0 +1,309 @@
+---
+title: "Lab 9"
+author: "Nathan Preuss"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: show
+    csl: biomed-central.csl
+    df_print: paged
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    number_sections: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 1
+
+Working Directory
+
+```{r}
+getwd()
+```
+
+# Task 2
+
+## Explanation of Line A and B
+
+Line A creates a sample of size n*iter, with n being the sample size and iter being the number of iterations to create a sample.  The elements are sampled from X with replacement.
+
+Line B creates a confidence interval with bounds alpha/2 and 1-alpha/2.
+
+## Further Exaplanation of Sample
+
+The sample size is the length of the sample, X.  If the observations weren't sampled without replacement, then each sample would be the same.  By sampling with replacement, each sample will probably be different from each other, and as a result, each datum will be selected with equal probability.
+
+## Sampling and Explanations
+
+```{r}
+set.seed(35) # This will give everyone the same sample  
+sam=round(rnorm(20,mean=10,sd=4),2)
+
+unique(sample(sam,20,replace=TRUE))  #  repeat  this line 5XsExplain what you see.  
+unique(sample(sam,20,replace=TRUE))
+unique(sample(sam,20,replace=TRUE))
+unique(sample(sam,20,replace=TRUE))
+unique(sample(sam,20,replace=TRUE))
+```
+
+The samples are all different lengths.  Because the datums were replaced, different samples had a different number of duplicates, and because the unique function removes duplicates so that only unique values remain, the samples ended up with different lengths.
+
+```{r}
+unique(sample(sam,20,replace=FALSE)  )#  repeat  this line 5XsExplain what you see.oIssue 
+unique(sample(sam,20,replace=FALSE)  )
+unique(sample(sam,20,replace=FALSE)  )
+unique(sample(sam,20,replace=FALSE)  )
+unique(sample(sam,20,replace=FALSE)  )
+```
+
+In this case, they are all the same sample, the data points are just reordered inside of each sample.
+
+```{r}
+#sample(sam,21,replace=FALSE) 
+```
+
+When this code is run, an error is produced, saying that that sample cannot take a sample larger than the population when replace = False.  This is because sampling without replacement means that the maximum length of the sample is 20, and the sample is trying to sample 21 objects, which is impossible, so it throws an error.
+
+# Task 3
+
+## 95% confidence intervals
+
+```{r}
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+
+invisible(list(ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+
+set.seed(39)
+sam=rnorm(25,mean=25,sd=10)
+myboot2(x=sam)
+```
+
+In this case, the population mean is 25.  So the bootstrap sample is similar (23.88), but slightly different from the theoretical mean.  The interval in this case contains the population value.
+
+```{r}
+set.seed(30); 
+sam=rchisq(20,df=3)
+myboot2(x=sam)
+```
+
+In this case, the sample mean is much closer to the theoretical mean, 2.94 vs 3.0 respectively.  The interval in this case contains the population value.
+
+
+```{r}
+set.seed(40) 
+sam=rgamma(30,shape=2,scale=3)
+myboot2(x=sam)
+```
+
+The theoretical mean for the gamma distribution is $\alpha\beta$, which in this case evaluates to 6.  So the bootstrap function, again, is close to the theoretical value, but not quite.  The interval in this case contains the population value.
+
+```{r}
+set.seed(10)
+sam=rbeta(20,shape1=3,shape2=4)
+myboot2(x=sam)
+```
+
+In this case, the sample mean (.41) is almost exactly the theoretical mean (.428).  The interval in this case contains the population value.
+
+## 80% Bootstrap intervals plots
+
+```{r}
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+myboot2(x=sam, fun="var")
+set.seed(30); sam=rchisq(20,df=3)
+myboot2(x=sam, fun="var")
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+myboot2(x=sam, fun="var")
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+myboot2(x=sam, fun="var")
+```
+
+# Task 4
+
+## Modified Bootstrap
+
+```{r}
+myboot3<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+
+list(ci=ci,fun=fun,x=x, xstat=xstat)# Some output to use if necessary
+}
+sam=c(1,1,1,2,2,2,2,3,3,3,4,4)
+z <- myboot3(x=sam, fun="median")
+
+barplot((z$xstat))
+```
+
+That barplot of xstat is pretty funky looking.
+The bootstrap estimate for the confidence intervals is (1.5, 3)
+
+# Task 5
+
+## Creating that mean and median function
+
+```{r}
+myfun<-function(x)
+{
+  mean(x)/median(x)
+}
+```
+
+## 95% Interval Plots
+
+```{r}
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+myboot2(x=sam, fun="myfun")
+set.seed(30); sam=rchisq(20,df=3)
+myboot2(x=sam, fun="myfun")
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+myboot2(x=sam, fun="myfun")
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+myboot2(x=sam, fun="myfun")
+```
+
+## 70% Interval Plots
+
+```{r}
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+myboot2(x=sam, fun="myfun", alpha=.3)
+set.seed(30); sam=rchisq(20,df=3)
+myboot2(x=sam, fun="myfun", alpha=.3)
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+myboot2(x=sam, fun="myfun", alpha=.3)
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+myboot2(x=sam, fun="myfun", alpha=.3)
+```
+
+# Task 6
+
+## 4 Distributions
+
+Expontential, Binomial, Weibull, Cauchy
+
+## 80% Mean
+
+```{r}
+set.seed(39); sam=rexp(20, 1/8)
+myboot2(x=sam, fun="mean", alpha=.2)
+set.seed(30); sam=rbinom(20, 20, .3)
+myboot2(x=sam, fun="mean", alpha=.2)
+set.seed(40); sam=rweibull(20,shape=2,scale=1)
+myboot2(x=sam, fun="mean", alpha=.2)
+set.seed(10); sam=rcauchy(20,location = 0, scale = 1)
+myboot2(x=sam, fun="mean", alpha=.2)
+```
+
+## 80% Variance
+
+```{r}
+set.seed(39); sam=rexp(20, 1/8)
+myboot2(x=sam, fun="var", alpha=.2)
+set.seed(30); sam=rbinom(20, 20, .3)
+myboot2(x=sam, fun="var", alpha=.2)
+set.seed(40); sam=rweibull(20,shape=2,scale=1)
+myboot2(x=sam, fun="var", alpha=.2)
+set.seed(10); sam=rcauchy(20,location = 0, scale = 1)
+myboot2(x=sam, fun="var", alpha=.2)
+```
+
+# Task 7
+
+## Interesting Functions: SD and IQR
+
+```{r}
+set.seed(68);  sam=rnorm(20,mean=10,sd=4)
+myboot2(x=sam, fun="sd")
+myboot2(x=sam, fun="IQR")
+```
+
+## Theory Time!
+
+```{r}
+#qnorm for 95% confidence interval, alpha = .05
+qnorm(1-.05/2,mean=0,sd=1)
+```
+
+So, $z_{\frac{\alpha}{2}} = 1.95996$
+$\sigma = sd = 4$
+$\sqrt{n} = \sqrt{20} = 4.4721$
+$\overline y = 10$
+
+So, putting it all together:
+
+$$10 - 1.95996 * \frac{4}{4.4721} \le \mu \le 10 + 1.95996 * \frac{4}{4.4721}$$
+$$8.25 \le \mu \le \ 11.75$$
+
+
+```{r}
+set.seed(68); sam=rnorm(20,mean=10,sd=4)
+myboot2(x=sam)
+```
+
+Well, the confidence intervals are off by about .5, but the mean of the sample is also off from the theoretical mean by .46, so I'd say the calculated bootstrap interval is pretty similar to the bootstrap interval given in the histogram.
+
+## Task 8
+
+```{r}
+obj = MATH4753PREU0001::nathanboot2(x=MATH4753PREU0001::fire$DAMAGE)
+obj$ci
+```
+
+The 95% confidence interval for the damage variable for the fire data set is (22.6333, 30.5200).
+
