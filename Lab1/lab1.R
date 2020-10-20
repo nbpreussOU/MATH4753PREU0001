@@ -10,6 +10,7 @@ getwd()
 # Read in the data from DDT
 # header is true because of variable names on the top of each column
 
+
 #ddt=read.table(file.choose(),sep=",",header=TRUE) 
 
 ddt = read.csv("DDT.csv")
