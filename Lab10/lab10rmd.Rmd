@@ -1,0 +1,318 @@
+---
+title: "Lab 10"
+author: "Nathan Preuss"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: show
+    csl: biomed-central.csl
+    df_print: paged
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    number_sections: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 1
+
+Working Directory
+
+```{r}
+getwd()
+```
+
+# Task 2
+
+## Code Interpretation
+
+```{r}
+mymaxlik=function(lfun,x,param,...){
+# how many param values are there?
+np=length(param)# outer -- notice the order, x then param
+# this produces a matrix – try outer(1:4,5:10,function(x,y) paste(x,y,sep=" "))   to understand
+z=outer(x,param,lfun)# A# 
+#z is a matrix where each x,param is replaced with the function evaluated at those values
+y=apply(z,2,sum)# y is a vector made up of the column sums
+# Each y is the log lik for a new parameter value
+plot(param,y,col="Blue",type="l",lwd=2,...)# which gives the index for the value of y >= max.
+# there could be a max between two values of the parameter, therefore 2 indices
+# the first max will take the larger indice
+i=max(which(y==max(y)))# B
+abline(v=param[i],lwd=2,col="Red")# plots a nice point where the max lik is 
+points(param[i],y[i],pch=19,cex=1.5,col="Black")
+axis(3,param[i],round(param[i],2))#check slopes. If it is a max the slope should change sign from + to # We should get three + and two -vs
+ifelse(i-3>=1 & i+2<=np, slope<-(y[(i-2):(i+2)]-y[(i-3):(i+1)])/(param[(i-2):(i+2)]-param[(i-3):(i+1)]),slope<-"NA")
+return(list(i=i,parami=param[i],yi=y[i],slope=slope))}
+```
+
+Line A takes the outer product of two vectors, in this case x and param. Outer then applies the function lfun to the outer product.
+
+Line B finds the maximum value of the array of y values by searching the vector of y's to find the element that is equal to the largest element of the array, and then storing the index of the max in i.
+
+## Mathematical Representation of the Maximum Likelihood
+
+$$f(x) = \left(\frac{n!} {x! (n-x)!} \right)p^x(1-p)^{n-x}$$
+$$L(p) = f(x_1)f(x_2)...f(x_n)$$
+$$L(p) = \left(\left(\frac{n!} {x_1! (n-x_1)!} \right)p^{x_1}(1-p)^{n-x_1}\right)\left(\left(\frac{n!} {x_2! (n-x_2)!} \right)p^{x_2}(1-p)^{n-x_2}\right)...\left(\left(\frac{n!} {x_n! (n-x_n)!} \right)p^{x_n}(1-p)^{n-x_n}\right)$$
+$$ln(L(p)) = \sum_{i=1} ^ nx_iln(p) + \left(n - \sum_{i=1}^n x_i\right)ln(1-p)$$
+$$\sum_{i=1}^n x_i = k$$
+$$\frac{dln(L(p))} {dp} = \frac 1 p k + \frac {n-k} {1-p} = 0$$
+$$(1-\hat p )k + p(n-k) = 0$$
+$$\hat p = \frac n k$$
+
+## R Code for the Likelihood
+
+```{r}
+mylik<-function(n,k)
+{
+  k/n
+}
+# 20 trials with a k = 10 successes
+mylik(20, 10)
+```
+
+## Example Graphical Maximum Likelihood Estimate
+
+```{r}
+logbin=function(x,param) log(dbinom(x,prob=param,size=10))
+x = mymaxlik(x=c(3,3,4,3,4,5,5,4),param=seq(0,1,length=1000),lfun=logbin,xlab=expression(pi),main="Binomial",cex.main=2)
+```
+
+
+# Task 3
+
+## Graphical Solution to Maximum Likelihood Estimate
+
+```{r}
+# various log likelihoods defined
+
+logpoiss=function(x,param) log(dpois(x,lambda=param)) 
+logexp=function(x,param) log(dexp(x,rate=param))
+
+y = mymaxlik(x=c(4,5,7,6,5),param=seq(0,30,length=1000),lfun=logpoiss,xlab=expression(lambda),main="Poisson",cex.main=2)
+```
+
+Using the graphical likelihood, the maximum likelihood of $\lambda = 5.41$.
+
+## Algebraic Expression for the Log Likelihood
+
+$$p(y) = \frac {\lambda^ye^{-\lambda}} {y!}$$
+$$L(\lambda) = p(y_1)p(y_2)...p(y_n)$$
+$$L(\lambda) = \left(\frac {\lambda^{y_1}e^{-\lambda}} {y_1!}\right)\left(\frac {\lambda^{y_2}e^{-\lambda}} {y_2!}\right)...\left(\frac {\lambda^{y_n}e^{-\lambda}} {y_n!}\right)$$
+$$ln(L(\lambda)) = -n\lambda + \sum^n_{i=1}y_iln(\lambda) - ln(y_1y_2...y_n)$$
+$$dln(L(\lambda)) = -n  + \sum^n_{i=1}y_i \frac 1 \lambda = 0$$
+$$\hat \lambda = \frac {\sum^n_{i=1}y_i} {n}$$
+
+## Using MyNRML to find the maximum likelihood solution
+
+```{r}
+myNRML=function(x0,delta=0.001,llik,xrange,parameter="param"){
+f=function(x) (llik(x+delta)-llik(x))/delta
+fdash=function(x) (f(x+delta)-f(x))/delta
+d=1000
+i=0
+x=c()
+y=c()
+x[1]=x0
+y[1]=f(x[1])
+while(d > delta & i<100){
+i=i+1
+x[i+1]=x[i]-f(x[i])/fdash(x[i])
+y[i+1]=f(x[i+1])
+d=abs(y[i+1])
+}
+layout(matrix(1:2,nr=1,nc=2,byrow=TRUE),width=c(1,2))
+curve(llik(x), xlim=xrange,xlab=parameter,ylab="log Lik",main="Log Lik")
+curve(f(x),xlim=xrange,xaxt="n", xlab=parameter,ylab="derivative",main=  "Newton-Raphson Algorithm \n on the derivative")
+points(x,y,col="Red",pch=19,cex=1.5)
+axis(1,x,round(x,2),las=2)
+abline(h=0,col="Red")
+
+segments(x[1:(i-1)],y[1:(i-1)],x[2:i],rep(0,i-1),col="Blue",lwd=2)
+segments(x[2:i],rep(0,i-1),x[2:i],y[2:i],lwd=0.5,col="Green")
+
+list(x=x,y=y)
+}
+myNRML(x0=1,delta=0.000001,llik=function(x) log(dpois(7,x)*dpois(4,x)),xrange=c(0,20),parameter="lambda" )
+```
+
+In this case, assuming I have the right parameter values, $\hat \lambda \approx 5.4908$ 
+
+# Task 4
+
+## Using mymaxlikg to find the graphical maximum likelihood value for p
+
+```{r}
+logbin2=function(theta){log(dbinom(2,prob=theta,size=6)) + log(dbinom(4,prob=theta,size=10))}
+
+mymaxlikg=function(lfun="logbin2",theta) { # default log lik is a combination bin
+nth=length(theta)  # nu. of valuse used in theta
+thmat=matrix(theta,nr=nth,nc=1,byrow=TRUE) # Matrix of theta
+z=apply(thmat,1,lfun) # z holds the log lik values
+zmax=max(which(z==max(z)))  # finding the INDEX of the max lik
+plot(theta,exp(z),type="l") # plot of lik
+abline(v=theta[zmax],col="Blue")   #  verical line through max
+axis(3,theta[zmax],round(theta[zmax],4))  # one tick on the third axis 
+theta[zmax]   # theta corresponding to max lik
+}
+
+mymaxlikg(theta=seq(0,1,length=10000))
+```
+
+The maximum likelihood solution for p is $p = 0.3750$.
+
+# Task 5
+
+## Algebraic Expression
+
+I'm assuming that you can multiply the log likelihood binomial expression together with the log likelihood of the poisson expression to get the joint log likelihood.
+
+So:
+
+$$ln(L(\theta_1,\theta_2)) = \left(-n\theta_2 + \sum^n_{i=1}y_iln(\theta_2) - ln(y_1y_2...y_n)\right)\left(\sum_{i=1} ^ ny_iln(\theta_1) + \left(n - \sum_{i=1}^n y_i\right)ln(1-\theta_1)\right)$$
+
+## Graphical Likelihood
+
+```{r}
+logbinpois=function(theta1,theta2) log(dbinom(4,size=20,prob=theta1)) + log(dpois(4,lambda=theta2))
+
+maxlikg2=function(theta1,theta2,lfun="logbinpois",...){
+n1=length(theta1)
+n2=length(theta2)
+z=outer(theta1,theta2,lfun)
+contour(theta1,theta2,exp(z),...) # exp(z) gives the lik
+maxl=max(exp(z))    # max lik
+coord=which(exp(z)==maxl,arr.ind=TRUE)  # find the co-ords of the max
+th1est=theta1[coord[1]] # mxlik estimate of theta1
+th2est=theta2[coord[2]]
+abline(v=th1est,h=th2est)
+axis(3,th1est,round(th1est,2))
+axis(4,th2est,round(th2est,2),las=1)
+list(th1est=th1est,th2est=th2est)
+}
+maxlikg2(theta1=seq(0,1,length=1000),theta2=seq(0,10,length=1000),nlevels=20)
+```
+
+The graphical result suggests that $\theta_1 \approx .2002$ and $\theta_2 = 4.004$.
+
+# Task 6
+
+## Normal Distribution
+
+```{r}
+mymlnorm=function(x,mu,sig,...){  #x sample vector
+nmu=length(mu) # number of values in mu
+nsig=length(sig)
+n=length(x) # sample size
+zz=c()    ## initialize a new vector
+lfun=function(x,m,p) log(dnorm(x,mean=m,sd=p))   # log lik for normal
+for(j in 1:nsig){
+z=outer(x,mu,lfun,p=sig[j]) # z a matrix 
+# col 1 of z contains lfun evaluated at each x with first value of mu, 
+# col2 each x with 2nd value of m 
+# all with sig=sig[j]
+y=apply(z,2,sum)
+# y is a vector filled with log lik values, 
+# each with a difft mu and all with the same sig[j]
+zz=cbind(zz,y)
+## zz is the matrix with each column containing log L values, rows difft mu, cols difft sigmas 
+}
+maxl=max(exp(zz))
+coord=which(exp(zz)==maxl,arr.ind=TRUE)
+maxlsig=apply(zz,1,max)
+contour(mu,sig,exp(zz),las=3,xlab=expression(mu),ylab=expression(sigma),axes=TRUE,
+main=expression(paste("L(",mu,",",sigma,")",sep="")),...)
+mlx=round(mean(x),2)  # theoretical
+mly=round(sqrt((n-1)/n)*sd(x),2)
+#axis(1,at=c(0:20,mlx),labels=sort(c(0:20,mlx)))
+#axis(2,at=c(0:20,mly),labels=TRUE)
+abline(v=mean(x),lwd=2,col="Green")
+abline(h=sqrt((n-1)/n)*sd(x),lwd=2,col="Red")
+
+# Now find the estimates from the co-ords
+muest=mu[coord[1]]
+sigest=sig[coord[2]]
+
+abline(v=muest, h=sigest)
+return(list(x=x,coord=coord,maxl=maxl, muest=muest, sigest=sigest))
+}
+
+mymlnorm(x=c(10,12,13,15,12,11,10),mu=seq(10,15,length=1000),sig=seq(0.1,5,length=1000),lwd=2,labcex=1)
+
+```
+
+$\hat \mu = 11.8568$ and $\hat \sigma = 1.6401$.
+
+# Task 7
+
+```{r}
+mymlbeta=function(x,alpha,beta,...){  #x sample vector
+na=length(alpha) # number of values in alpha
+nb=length(beta)
+n=length(x) # sample size
+zz=c()    ## initialize a new vector
+lfun=function(x,a,b) log(dbeta(x,shape1=a,shape2=b))   # log lik for beta
+for(j in 1:nb){
+z=outer(x,alpha,lfun,b=beta[j]) # z a matrix 
+# col 1 of z contains lfun evaluated at each x with first value of alpha, 
+# col2 each x with 2nd value of a 
+# all with b=beta[j]
+y=apply(z,2,sum)
+# y is a vector filled with log lik values, 
+# each with a difft alpha and all with the same sig[j]
+zz=cbind(zz,y)
+## zz is the matrix with each column containing log L values, rows difft alpha, cols difft betas 
+}
+maxl=max(exp(zz))    # max lik
+coord=which(exp(zz)==maxl,arr.ind=TRUE)  # find the co-ords of the max
+aest=alpha[coord[1]] # mxlik estimate of alpha
+best=beta[coord[2]]
+contour(alpha,beta,exp(zz),las=3,xlab=expression(alpha),ylab=expression(beta),axes=TRUE,
+main=expression(paste("L(",alpha,",",beta,")",sep="")),...)
+
+abline(v=aest, h=best)
+abline(v= 3, h = 4)
+points(aest,best,pch=19)
+points(3,4,pch=19, col="Red")
+axis(4,best,round(best,2),col="Red")
+axis(2,4, col="Blue")
+axis(1,3, col="Blue")
+axis(3,aest,round(aest,2),col="Red")
+text(2, 5.5, paste("Alpha Difference = ", round(3-aest,2), sep=""))
+text(2, 5, paste("Beta Difference = ", round(4-best,2), sep=""))
+return(list(x=x,coord=coord,maxl=maxl,maxalpha=aest,maxbeta=best))
+}
+
+# original sampling
+set.seed(35)
+sam= rbeta(30,shape1=3,shape2=4)
+
+#resampling
+n=length(sam)   #sample size
+
+y=sample(sam,n*12,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=12,byrow=TRUE)
+
+#layout(matrix(c(1:12), 3, 4, byrow = TRUE))
+temp <- c(1:12)
+for (i in temp){
+  t = mymlbeta(x=rs.mat[,i],alpha=seq(1,5,length=100),beta=seq(2,6,length=100),lwd=2,labcex=1)
+}
+
+```
+
+# Task 8
+
+## R Function
+
+```{r}
+x = MATH4753PREU0001::nathanmlnorm(x=c(5,4,3,6,5,6,4,2,7,5), mu=seq(2,7,length=1000),sig=seq(0.1,4,length=1000))
+```
+
