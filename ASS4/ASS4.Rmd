@@ -1,0 +1,397 @@
+---
+title: 'Assignment 4'
+author: "Nathan Preuss"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions{}
+
+## I have solved 10/10 Questions.
+
+## Q 1
+
+### A
+
+Selecting a random sample of birds
+
+```{r}
+df <- read.csv("NZBIRDS.csv")
+set.seed(23)
+x <- sample(df$Body.Mass,35,replace=FALSE)
+x
+```
+
+### B
+
+Mean, standard deviation, and confidence interval.
+
+```{r}
+mean(x)
+sd(x)
+t.test(x, conf.level = .95)
+```
+
+The sample mean is 6173.486, the sample standard deviation is 17956.63, and the 95% confidence interval is (5.1669, 12341.8045).
+
+### C
+
+There is a 95% chance that a bird's mass will fall between 5.1669 and 12341.8045.
+
+### D
+
+The true mean (9113) does lie within the confidence interval.  This interval is very likely to contain $\mu$ because $\mu$ will fall within the interval 95% of the time.
+
+### E
+
+Selecting a random sample of birds
+
+```{r}
+df <- read.csv("NZBIRDS.csv")
+set.seed(25)
+y <- sample(df$Egg.Length,35,replace=FALSE)
+y
+```
+
+Mean, standard deviation, and confidence interval.
+
+```{r}
+mean(y)
+sd(y)
+t.test(y, conf.level = .95)
+```
+
+The sample mean is 56.9857, the sample standard deviation is 38.3813, and the 95% confidence interval is (43.8012, 70.1701).
+
+There is a 95% chance that a bird's Egg Length will fall between 43.8012 and 70.1701.
+
+The true mean (61.06) does lie within the confidence interval.  This interval is very likely to contain $\mu$ because $\mu$ will fall within the interval 95% of the time.
+
+### F
+
+Point estimate for flightless birds: $\hat p = \frac Y n = \frac {21} {38} = 0.5526$.
+Point estimate for flying birds: $\hat p = \frac Y n = \frac {7} {78} = 0.0897$.
+
+```{r}
+qnorm(.975)
+```
+
+$z_{\alpha/2} = 1.9599$
+
+Checking to make sure the sample size is sufficiently large:
+
+$$n_1\hat p _1 = 38*0.5526 = 21.0 \ge 4$$
+$$n_1\hat q _1 = 38*(1-0.5526) = 17.0 \ge 4$$
+$$n_2\hat p _2 = 38*0.0897 = 7.0 \ge 4$$
+$$n_2\hat q _2 = 38*(1-.0897) = 71.0 \ge 4$$
+
+Since all of the above have values greater than 4, the normal approximation is reasonable.
+
+$$(\hat p_1 - \hat p_2) = z_{\alpha/2} \pm \sqrt { \frac{\hat p_1 \hat q_1 } {n} + \frac{\hat p_2 \hat q_2 } {n}}$$
+$$ = (.5526 - .0897) = 1.96 \pm \sqrt { \frac{.5526*(1-.5526)} {38} + \frac{.0897*(1-.0897)} {78}}$$
+$$ = .4629 \pm .1703 = (.2926, .6332)$$
+
+The confidence interval for $(\hat p_1 - \hat p_2)$ is $(.2926, .6332)$.
+
+### G
+
+Because the confidence interval is entirely greater than 0, the proportion of of flightless extinct birds is greater than flightless nonextinct birds.  Thus, it supports the theory that the proportion of flightless birds will be greater for extinct species than for nonextinct species
+
+## Q 2
+
+### A
+
+Create 2 samples for the different data.
+
+$$(\overline y_1 - \overline y_2) \pm z_{\alpha/2} \sqrt{\frac{s_1^2}{n_1} +\frac{s^2_2} {n_2}} = -40 \pm 1.645 \sqrt{\frac{422^2}{100} + \frac{271^2}{47}}$$
+$$-40 \pm 95.118 = (-135.118, 55.118)$$
+
+The 90% confidence interval for the mean shear strengths of epoxy-repaired truss joints for the two species of wood is (-135.118, 55.118).
+
+### B
+
+```{r}
+qf(.95, 99, 46)
+qf(.95, 46, 99)
+```
+Using the above values for $F_{(v1, v2)}$ and $F_{(v2, v1)}$, the 90% confidence interval can be constructed as:
+
+$$\frac {422^2}{271^2} * \frac 1 {1.548176} \le \frac {\sigma^2_1} {\sigma^2_2} \le \frac {422^2}{271^2} * 1.491943 = 1.566 \le \frac {\sigma^2_1} {\sigma^2_2} \le 3.618$$ 
+
+The 90% confidence interval for the variance is (1.566, 3.618).  Since all the values in this interval is greater than 1.0, we can be confident that the variance  in the mean shear stress of Southern Pines is greater than than the corresponding variance for Ponderosa Pines.
+
+## Q 3
+
+### A
+
+$Y$ has a normal distribution with $\mu = 0$ and $\sigma$.
+$$Z = \frac {Y-\mu}{\sigma} = \frac {Y-0}{\sigma} = \frac Y \sigma$$
+$Z$ has a standard normal distribution.
+
+$Z^2 = \frac {Y^2} {\sigma^2}$ will have a $\chi^2$ distribution with 1 degree of freedom.
+
+### B
+
+$$P\left(\chi^2_{1-\alpha/2} \le \frac{Y^2}{\sigma^2} \le \chi^2_{\alpha/2} \right) = 1 - \alpha$$
+$$P\left(\frac 1 {\chi^2_{1-\alpha/2}} \le \frac{\sigma^2}{Y^2} \le \frac{1}{\chi^2_{\alpha/2}} \right) = 1 - \alpha$$
+$$P\left(\frac {Y^2} {\chi^2_{1-\alpha/2}} \le \sigma^2 \le \frac{Y^2}{\chi^2_{\alpha/2}} \right) = 1 - \alpha$$
+$$P\left(\frac {Y^2} {\chi^2_{\alpha/2}} \le \sigma^2 \le \frac{Y^2}{\chi^2_{1-\alpha/2}} \right) = 1 - \alpha$$
+
+## Q 4
+
+### A
+
+$$H_0: \mu = 2$$ 
+$$H_a: \mu \ne 2$$
+
+### B
+
+Test statistic: -1.02
+p-value: .0322
+
+### C
+
+```{r}
+qt(.05, 19)
+```
+
+Reject $H_0$ if $T \gt 1.729$ or $T \lt -1.729$
+
+### D
+
+Because the value for T is not less than -1.729 or greater than 1.729, then the null hypothesis is accepted.
+
+### E
+
+The confidence interval and the test statistic lead to the same conclusion because if the 95% confidence interval contains mu, then a hypothesis test at the 0.05 level will accept the null hypothesis. 
+
+## Q 5
+
+### A
+
+Using the formula for the test statistic, but solving it in R.
+
+```{r}
+y <- c(9.6, 4.5, 13.2, 4.1, 22.6, 2.7, 14.7, 3.5, 13.6, 19.8, 14.3, 56.9, 25.1, 18.4, 2.7, 4.2, 30.2, 10.3, 17.6, 2.4, 17.3, 38.8, 3.0, 5.8, 7.6)
+(mean(y)-15)/(sd(y)/sqrt(length(y)))
+```
+
+The test statistic is -0.1866.
+
+### B
+
+We must find the rejection region in terms of $\overline y$.
+
+$$\overline y = \mu_0 + t \left(\frac{s}{\sqrt {n}}\right)$$
+
+For $t = -1.711$, $\overline y = 15 - 1.711 \left(\frac{12.96}{\sqrt{25}}\right) = 10.565$
+For $t = 1.711$, $\overline y = 15 + 1.711 \left(\frac{12.96}{\sqrt{25}}\right) = 19.435$
+
+We can reject $H_0$ of $\overline y \lt 10.565$ or $\overline y \gt 19.435$.
+
+We want to find $P(\overline y \lt 10.565 | \mu_a = 14) + P(\overline y \gt 19.435 | \mu_a = 14)$
+
+```{r}
+x <-(10.565 - 14) / (sd(y)/sqrt(length(y)))
+z <- (19.435 - 14) / (sd(y)/sqrt(length(y)))
+pt(x, length(y)) + 1 - pt(z, length(y))
+
+```
+
+$$P(\overline y \lt 10.565 | \mu_a = 14) + P(\overline y \gt 19.435 | \mu_a = 14) = .0986 + .0232 = .1217$$
+
+## Q 6
+
+$$H_0: (\mu_1 - \mu_2) = 0$$
+$$H_a: (\mu_1 - \mu_2) \ne 0$$
+
+Using the formula for the paired t test, but solving it in R.
+
+```{r}
+clear <- c(.618, .591, .225, .375)
+fog <- c(.270, .241, .205, .523, .112, .330, .270, .239)
+sp <- (((length(fog) - 1)*var(fog)) + (length(clear) - 1)*var(clear))/(length(fog) + length(clear) - 2)
+t = (mean(fog) - mean(clear) - 0) / sqrt(sp*(1/length(fog) + 1/length(clear)))
+t
+```
+
+The T-test is -2.0467.
+
+```{r}
+qt(.05, length(fog) + length(clear) - 2)
+```
+
+The region for rejection is $ t \lt -1.8124$.  Because $-2.0467 \lt -1.8124$, the null hypothesis is rejected.  Therefore, there is a difference in the mean of Oxon/Thion Ration on foggy vs clear or cloudy days.
+
+## Q 7
+
+### A
+
+$$H_0: \frac{\sigma_1} \sigma_2 = 1$$
+$$H_a: \frac{\sigma_1} \sigma_2 \ne 1$$
+
+Using R to calculate the F statitic and the rejection region.
+
+```{r}
+df <- read.csv("GASTURBINE.csv")
+dft <- df[df$ï..ENGINE == "Traditional",]
+dfn <- df[df$ï..ENGINE == "Aeroderiv",]
+dfa <- df[df$ï..ENGINE == "Advanced",]
+trad <- as.vector(dft$HEATRATE)
+aero <- as.vector(dfn$HEATRATE)
+adv <- as.vector((dfa$HEATRATE))
+
+qf(c(.05/2,1-.05/2), length(aero) - 1, length(trad) - 1)
+
+f <- var(aero) / var(trad)
+f
+var.test(aero, trad, conf.level = .95)
+```
+
+The Rejection Region is F > 2.763, and F = 4.296, so the null hypothesis that the ratio of the variances equaled 1 is rejected.
+
+### B
+
+
+$$H_0: \frac{\sigma_1} \sigma_2 = 1$$
+$$H_a: \frac{\sigma_1} \sigma_2 \ne 1$$
+
+Using R to calculate the F statistic and the rejection region.
+
+```{r}
+var.test(aero, adv, conf.level = .90)
+qf(c(.05/2, 1-.05/2), length(aero) - 1, length(adv) - 1)
+```
+
+The rejection region is F > 3.128.  In this case, F = 17.249, so the null hypothesis that there was no significant difference in the ratio of the variances is rejected.
+
+## Q 8
+
+### A
+
+$\sigma_1$ is the variation in the Dry Steppe ants.
+$\sigma_2$ is the variation in the Gobi Desert ants.
+$$H_0: \frac{\sigma_1} \sigma_2 = 1$$
+$$H_a: \frac{\sigma_1} \sigma_2 \ne 1$$
+
+### B
+
+Using R to compute the F statistic and the rejection region.
+
+```{r}
+dry <- c(3, 3, 52, 7, 5)
+gobi <- c(49, 5, 4, 4, 5, 4)
+var.test(dry, gobi, conf.level = .95)
+qf(c(.05/2, 1-.05/2), length(dry) - 1, length(gobi) - 1)
+```
+
+
+F statistic is F = 1.3684.
+
+### C
+
+The rejection region is $F \lt .1067$ and $F > 7.3879$.
+
+### D
+
+The p-value is 0.7264
+
+### E
+
+Because the F statistic is not in the rejection region, the null hypothesis cannot be rejected, which means that there is no meaningful difference in the variation of the number of ants in the dry steppe as compared to the gobi desert.
+
+### F
+
+we are assuming that both of the populations have relative frequency distributions that are approximately normal, and the random samples are selected in an independent manner from the two populations.
+
+## Q 9
+
+$\mu_1$ is the human scheduler.
+$\mu_2$ is the automated scheduler.
+
+$$H_0: (\mu_1 - \mu_2) = 0$$
+$$H_a: (\mu_1 - \mu_2) \ne 0$$
+
+Using R to compute the t statistic using the paired t-statistic formula.
+
+```{r}
+human <- c(185.4, 146.3, 174.4, 184.9, 240.0, 253.8, 238.8, 263.5)
+
+compu <- c(180.4, 248.5, 185.5, 216.4, 269.3, 249.6, 282.0, 315.9)
+
+diff <- human - compu
+
+t <- (mean(diff) - 0)/(sd(diff) / sqrt(length(diff)))
+t
+qt(c(.025, .975), length(diff) - 1)
+```
+
+The t statistic is -2.629.  The rejection region is $t > 2.364$ or $t < -2.364$.  Because the t statistic falls in the rejection region, the null hypothesis is rejected, which means there is a meaningful difference in the scheduling ability of humans and computers.
+
+## Q 10
+
+From the looks of things, the confidence interval values are slightly different than the ones in the graph in the assignment.  Considering this also occurs in the provided code for the bootstrap confidence intervals, I assume that R uses a slightly different way to calculate confidence intervals now than in the past.
+
+```{r}
+myboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+..., col=rainbow(20))
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+f <- t.test(x, conf.level = 1-alpha)$conf.int[1]
+g <- t.test(x, conf.level = 1-alpha)$conf.int[2]
+t <- qt(1-alpha/2, length(x) - 1)
+cit = c(f,g)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],max(para$density)/10,paste("(",round(ci[1],2),sep=""),col="Red",cex=2)
+text(ci[2],max(para$density)/10,paste(round(ci[2],2),")",sep=""),col="Red",cex=2)
+text(f,max(para$density)/5,paste("(",round(f,2),sep=""),col="Blue",cex=2)
+text(g,max(para$density)/5,paste(round(g,2),")",sep=""),col="Blue",cex=2)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=2)
+
+return(list(fun=fun,x=x, t=t, ci=ci, cit=cit))# Some output to use if necessary
+}
+
+set.seed(35); sam<-round(rnorm(30,mean=20,sd=3),3)
+myboot(x=sam)
+
+### TESTS ###
+# sam<-round(rnorm(20,mean=50,sd=.5),3)
+# myboot(x=sam, alpha = .01)
+# sam<-round(rnorm(30,mean=30,sd=3),3)
+# myboot(x=sam, alpha = .10)
+# sam<-round(rnorm(30,mean=30,sd=2),3)
+# myboot(x=sam, alpha = .20)
+```
+
+
